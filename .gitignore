@@ -1,0 +1,24 @@
+# Temporary browser-test harnesses and scratch artifacts (dev/verify.mjs is tracked)
+dev/_*
+*.bak
+*.tmp
+
+# Backups and CSV exports produced by the app at runtime
+financial-cycles-backup-*.json
+financial-cycles-transactions-*.csv
+financial-cycles-ledger-*.csv
+financial-cycles-raw-*.txt
+
+# Node (the app needs none; dev/verify.mjs runs on bare Node with no dependencies)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.swp
+.vscode/
+.idea/

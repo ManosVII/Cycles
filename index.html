@@ -1,0 +1,3024 @@
+<!doctype html>
+<html lang="el" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Financial Cycles — Διαχείριση Οικονομικών Κύκλων</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  --bg:#12141a;
+  --bg-elev:#181b23;
+  --surface:#1d212b;
+  --surface-2:#242938;
+  --surface-3:#2c3143;
+  --border:#333a4d;
+  --border-strong:#454e66;
+  --text:#e9edf5;
+  --text-dim:#a7b0c2;
+  --text-faint:#79839a;
+  --green:#33c17d;
+  --green-dim:#1f7d51;
+  --green-soft:rgba(51,193,125,.14);
+  --red:#f0555c;
+  --red-dim:#9c2f35;
+  --red-soft:rgba(240,85,92,.14);
+  --gold:#e7b93f;
+  --gold-soft:rgba(231,185,63,.16);
+  --gray:#525a70;
+  --gray-soft:rgba(82,90,112,.22);
+  --accent:#5b91ff;
+  --accent-soft:rgba(91,145,255,.16);
+  --focus:#8ab4ff;
+  --shadow:0 10px 30px rgba(0,0,0,.42);
+  --radius:16px;
+  --radius-sm:10px;
+  --maxw:1180px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+html[data-theme="light"]{
+  --bg:#f2f4f8;
+  --bg-elev:#ffffff;
+  --surface:#ffffff;
+  --surface-2:#f5f7fb;
+  --surface-3:#eaeefa;
+  --border:#d9dfeb;
+  --border-strong:#bcc5d8;
+  --text:#161a22;
+  --text-dim:#4c5566;
+  --text-faint:#6c7689;
+  --green:#12885a;
+  --green-dim:#0d6845;
+  --green-soft:rgba(18,136,90,.12);
+  --red:#c8282f;
+  --red-dim:#9b1f25;
+  --red-soft:rgba(200,40,47,.10);
+  --gold:#9a7508;
+  --gold-soft:rgba(154,117,8,.14);
+  --gray:#7a8497;
+  --gray-soft:rgba(122,132,151,.16);
+  --accent:#2f63d6;
+  --accent-soft:rgba(47,99,214,.12);
+  --focus:#2f63d6;
+  --shadow:0 8px 24px rgba(20,28,48,.10);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{margin:0;font-weight:650;line-height:1.25}
+p{margin:0}
+button{font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.visually-hidden{
+  position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;
+}
+.muted{color:var(--text-dim)}
+.faint{color:var(--text-faint);font-size:.86rem}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app{max-width:var(--maxw);margin:0 auto;padding:16px 16px 120px}
+.app-header{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+  padding:14px 0 18px;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{
+  width:44px;height:44px;flex:0 0 44px;border-radius:13px;
+  display:grid;place-items:center;font-weight:800;letter-spacing:-.5px;
+  background:linear-gradient(145deg,var(--green),var(--accent));color:#06121b;
+}
+.brand h1{font-size:1.18rem;letter-spacing:-.2px}
+.brand p{font-size:.8rem;color:var(--text-faint)}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+section.block{margin:0 0 22px}
+.section-head{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between;
+  margin:0 0 12px;
+}
+.section-head h2{font-size:1.02rem;letter-spacing:.2px;text-transform:uppercase;color:var(--text-dim)}
+
+/* ============================================================
+   CARDS / BUTTONS / BADGES
+   ============================================================ */
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px;box-shadow:var(--shadow);
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 16px;border-radius:12px;cursor:pointer;
+  border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);
+  font-weight:600;font-size:.92rem;transition:background .15s ease,transform .12s ease,border-color .15s ease;
+}
+.btn:hover{background:var(--surface-3)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--green);border-color:var(--green);color:#05130c}
+.btn-primary:hover{background:var(--green-dim);border-color:var(--green-dim);color:#eafff4}
+.btn-danger{background:var(--red-soft);border-color:var(--red);color:var(--red)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-ghost{background:transparent}
+.btn-sm{min-height:36px;padding:0 11px;font-size:.84rem;border-radius:10px}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:999px;font-size:.74rem;font-weight:700;
+  border:1px solid transparent;white-space:nowrap;letter-spacing:.2px;
+}
+.badge-green{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.badge-red{background:var(--red-soft);color:var(--red);border-color:var(--red)}
+.badge-gold{background:var(--gold-soft);color:var(--gold);border-color:var(--gold)}
+.badge-gray{background:var(--gray-soft);color:var(--text-dim);border-color:var(--gray)}
+.badge-accent{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+
+/* ============================================================
+   BALANCE + STATS
+   ============================================================ */
+.balance-card{
+  display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;
+  background:linear-gradient(150deg,var(--surface),var(--bg-elev));
+  border-color:var(--border-strong);
+}
+.balance-main{min-width:0}
+.balance-label{
+  font-size:.78rem;text-transform:uppercase;letter-spacing:1.4px;color:var(--text-faint);font-weight:700;
+}
+.balance-amount{
+  font-size:clamp(2rem,8vw,3.1rem);font-weight:800;letter-spacing:-1.2px;line-height:1.1;
+  font-variant-numeric:tabular-nums;margin:4px 0 6px;word-break:break-word;
+}
+.balance-amount.pos{color:var(--green)}
+.balance-amount.neg{color:var(--red)}
+.balance-note{font-size:.82rem;color:var(--text-faint);max-width:46ch}
+.stats-grid{
+  display:grid;gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+}
+.stat{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 13px;min-width:0;
+}
+.stat-label{font-size:.74rem;text-transform:uppercase;letter-spacing:.7px;color:var(--text-faint);font-weight:700}
+.stat-value{font-size:1.22rem;font-weight:750;margin-top:4px;font-variant-numeric:tabular-nums;word-break:break-word}
+.stat-value.green{color:var(--green)}
+.stat-value.red{color:var(--red)}
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+.toolbar{display:flex;flex-direction:column;gap:12px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  min-height:38px;padding:0 13px;border-radius:999px;cursor:pointer;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--text-dim);
+  font-size:.86rem;font-weight:650;
+}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.search-wrap{display:flex;flex-direction:column;gap:5px;max-width:420px}
+.search-wrap label{font-size:.8rem;color:var(--text-dim);font-weight:650}
+
+/* ============================================================
+   FORM CONTROLS
+   ============================================================ */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;min-width:0}
+.field > label{font-size:.84rem;font-weight:650;color:var(--text-dim)}
+.field .hint{font-size:.78rem;color:var(--text-faint)}
+input[type=text],input[type=date],input[type=search],select,textarea{
+  width:100%;min-height:44px;padding:10px 12px;border-radius:11px;
+  background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text);
+}
+textarea{min-height:76px;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--text-faint)}
+input[aria-invalid="true"],textarea[aria-invalid="true"],select[aria-invalid="true"]{
+  border-color:var(--red);background:var(--red-soft);
+}
+.err{color:var(--red);font-size:.8rem;font-weight:650}
+.err:empty{display:none}
+.grid-2{display:grid;gap:0 14px;grid-template-columns:1fr 1fr}
+.switch-row{
+  display:flex;align-items:flex-start;gap:10px;padding:11px 12px;margin-bottom:12px;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:11px;
+}
+.switch-row input{width:22px;height:22px;flex:0 0 22px;margin:1px 0 0;accent-color:var(--green)}
+.switch-row label{font-size:.88rem;font-weight:650}
+.switch-row .hint{display:block;font-weight:400;color:var(--text-faint);font-size:.78rem;margin-top:2px}
+
+/* ============================================================
+   CYCLE CARD + PROGRESS RING
+   ============================================================ */
+.cycle-list{display:grid;gap:14px}
+.cycle-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;box-shadow:var(--shadow);
+}
+.cycle-card.is-closed{border-style:dashed}
+.cycle-top{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.cycle-info{flex:1 1 260px;min-width:0}
+.cycle-title{font-size:1.08rem;word-break:break-word;margin-bottom:6px}
+.cycle-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.cycle-meta{font-size:.83rem;color:var(--text-dim);display:flex;gap:10px;flex-wrap:wrap}
+.cycle-notes{
+  margin-top:8px;font-size:.85rem;color:var(--text-dim);white-space:pre-wrap;word-break:break-word;
+  border-left:3px solid var(--border-strong);padding-left:10px;
+}
+.ring-wrap{
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;
+  width:170px;max-width:100%;margin-inline:auto;
+}
+.ring{width:150px;height:150px;display:block;max-width:100%}
+.ring-track{stroke:var(--gray);opacity:.42}
+.ring-fill{stroke:var(--green);transition:stroke-dashoffset .5s ease,stroke .3s ease}
+.ring-fill.over{stroke:var(--red)}
+.ring-pct{font-size:26px;font-weight:800;fill:var(--text)}
+.ring-amounts{font-size:11px;fill:var(--text-dim);font-weight:600}
+.ring-status{text-align:center;font-size:.84rem;font-weight:700}
+.ring-caption{
+  margin-top:10px;padding:9px 12px;border-radius:11px;font-size:.87rem;font-weight:600;
+  background:var(--surface-2);border:1px solid var(--border);
+}
+.ring-caption.good{color:var(--green);border-color:var(--green);background:var(--green-soft)}
+.ring-caption.bad{color:var(--red);border-color:var(--red);background:var(--red-soft)}
+.ring-caption.gold{color:var(--gold);border-color:var(--gold);background:var(--gold-soft)}
+.cycle-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.settle-summary{
+  margin-top:12px;padding:11px 13px;border-radius:11px;background:var(--surface-2);
+  border:1px solid var(--border);font-size:.87rem;display:grid;gap:5px;
+}
+.kv{display:flex;justify-content:space-between;gap:12px;margin:0}
+.kv dt{color:var(--text-dim)}
+.kv dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.kv dd.pos{color:var(--green)}
+.kv dd.neg{color:var(--red)}
+
+/* ============================================================
+   TRANSACTIONS
+   ============================================================ */
+.tx-panel{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+.tx-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.tx-item{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:10px 12px;
+}
+.tx-main{flex:1 1 150px;min-width:0}
+.tx-desc{font-weight:650;word-break:break-word}
+.tx-date{font-size:.78rem;color:var(--text-faint)}
+.tx-notes{font-size:.8rem;color:var(--text-dim);white-space:pre-wrap;word-break:break-word;margin-top:3px}
+.tx-amount{font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tx-amount.income{color:var(--green)}
+.tx-amount.expense{color:var(--red)}
+.tx-actions{display:flex;gap:6px}
+.icon-btn{
+  min-height:36px;min-width:36px;border-radius:9px;cursor:pointer;
+  background:var(--surface-3);border:1px solid var(--border);display:grid;place-items:center;font-size:.8rem;
+}
+.icon-btn:hover{border-color:var(--border-strong)}
+.icon-btn.danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ============================================================
+   LEDGER
+   ============================================================ */
+.ledger-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ledger-item{
+  display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;
+}
+.ledger-main{flex:1 1 190px;min-width:0}
+.ledger-desc{font-weight:650;word-break:break-word}
+.ledger-side{text-align:right;min-width:0}
+.ledger-adj{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ledger-adj.pos{color:var(--green)}
+.ledger-adj.neg{color:var(--red)}
+.ledger-bal{font-size:.78rem;color:var(--text-faint);white-space:nowrap}
+
+/* ============================================================
+   EMPTY STATE / ALERTS
+   ============================================================ */
+.empty{
+  text-align:center;padding:34px 18px;border:1px dashed var(--border-strong);
+  border-radius:var(--radius);color:var(--text-dim);background:var(--surface);
+}
+.empty h3{margin-bottom:6px;color:var(--text)}
+.empty p{font-size:.9rem;margin-bottom:14px}
+.alert{
+  border-radius:var(--radius);padding:16px;border:1px solid var(--red);
+  background:var(--red-soft);color:var(--text);margin-bottom:18px;
+}
+.alert h2{color:var(--red);font-size:1rem;margin-bottom:6px}
+.alert p{font-size:.9rem;margin-bottom:10px}
+.alert pre{
+  max-height:150px;overflow:auto;background:var(--bg);padding:10px;border-radius:9px;
+  font-size:.75rem;border:1px solid var(--border);white-space:pre-wrap;word-break:break-all;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(5,7,12,.72);
+  display:flex;align-items:center;justify-content:center;padding:16px;z-index:80;
+}
+.modal-backdrop[hidden]{display:none}
+.modal{
+  background:var(--bg-elev);border:1px solid var(--border-strong);border-radius:18px;
+  width:min(620px,100%);max-height:min(88vh,860px);display:flex;flex-direction:column;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);animation:pop .16s ease-out;
+}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.modal-head{
+  display:flex;align-items:flex-start;gap:12px;justify-content:space-between;
+  padding:16px 18px;border-bottom:1px solid var(--border);
+}
+.modal-head h2{font-size:1.05rem}
+.modal-head p{font-size:.82rem;color:var(--text-faint);margin-top:3px}
+.modal-body{padding:18px;overflow:auto}
+.modal-foot{
+  display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;
+  padding:14px 18px;border-top:1px solid var(--border);background:var(--surface);
+  border-radius:0 0 18px 18px;
+}
+.modal-close{
+  min-height:36px;min-width:36px;border-radius:9px;background:var(--surface-2);
+  border:1px solid var(--border);cursor:pointer;font-size:1rem;line-height:1;
+}
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
+.toast-region{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:120;
+  display:flex;flex-direction:column;gap:8px;align-items:center;
+  width:min(440px,calc(100% - 24px));pointer-events:none;
+}
+.toast{
+  width:100%;padding:12px 14px;border-radius:12px;font-size:.9rem;font-weight:650;
+  background:var(--surface-3);border:1px solid var(--border-strong);color:var(--text);
+  box-shadow:var(--shadow);animation:slideup .2s ease-out;word-break:break-word;
+}
+@keyframes slideup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.toast.success{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+.toast.error{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+.toast.info{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+.fab-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top,var(--bg) 62%,rgba(0,0,0,0));
+}
+.fab-bar .btn{width:100%}
+@media (max-width:640px){
+  .app{padding:12px 12px 108px}
+  .card{padding:15px}
+  .grid-2{grid-template-columns:1fr}
+  .fab-bar{display:block}
+  .header-actions .desktop-only{display:none}
+  .section-head .desktop-only{display:none}
+  .cycle-top{flex-direction:column-reverse}
+  .ring-wrap{width:100%}
+  .balance-card{flex-direction:column;align-items:flex-start}
+  .toast-region{bottom:76px}
+}
+@media (max-width:380px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-value{font-size:1.04rem}
+  .btn{padding:0 12px;font-size:.86rem}
+  .modal-foot .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+</style>
+</head>
+<body>
+<a class="visually-hidden" href="#main">Μετάβαση στο περιεχόμενο</a>
+
+<div class="app">
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">FC</span>
+      <div>
+        <h1>Financial Cycles</h1>
+        <p>Διαχείριση οικονομικών κύκλων</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="btn btn-primary desktop-only" data-action="new-cycle">+ Νέος κύκλος</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="toggle-theme" id="theme-btn">Φωτεινό θέμα</button>
+    </div>
+  </header>
+
+  <div id="storage-alert" role="alert"></div>
+
+  <main id="main">
+    <section class="block" aria-labelledby="balance-heading">
+      <div class="card balance-card">
+        <div class="balance-main">
+          <p class="balance-label" id="balance-heading">Τρέχον Balance</p>
+          <p class="balance-amount" id="balance-amount">—</p>
+          <p class="balance-note">Το Balance αλλάζει μόνο με κλείσιμο κύκλου, επαναφορά κλεισίματος ή χειροκίνητη προσαρμογή — ποτέ από μια συναλλαγή.</p>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-sm" data-action="set-initial-balance">Αρχικό Balance</button>
+          <button type="button" class="btn btn-sm" data-action="manual-adjustment">Χειροκίνητη προσαρμογή</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="stats-heading">
+      <div class="section-head"><h2 id="stats-heading">Σύνοψη</h2></div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </section>
+
+    <section class="block" aria-labelledby="cycles-heading">
+      <div class="section-head">
+        <h2 id="cycles-heading">Κύκλοι</h2>
+        <button type="button" class="btn btn-sm btn-primary desktop-only" data-action="new-cycle">+ Νέος κύκλος</button>
+      </div>
+      <div class="card toolbar">
+        <div class="search-wrap">
+          <label for="search-input">Αναζήτηση σε τίτλους, κατηγορίες και περιγραφές συναλλαγών</label>
+          <input type="search" id="search-input" placeholder="π.χ. ενοίκιο, μισθός, σούπερ μάρκετ" autocomplete="off">
+        </div>
+        <div class="filter-row" role="group" aria-label="Φίλτρα κύκλων" id="filter-row"></div>
+      </div>
+      <p class="faint" id="cycle-count" style="margin:10px 2px" aria-live="polite"></p>
+      <div class="cycle-list" id="cycle-list"></div>
+    </section>
+
+    <section class="block" aria-labelledby="ledger-heading">
+      <div class="section-head">
+        <h2 id="ledger-heading">Ιστορικό Balance</h2>
+        <button type="button" class="btn btn-sm" data-action="manual-adjustment">+ Χειροκίνητη προσαρμογή</button>
+      </div>
+      <div class="card">
+        <div id="ledger-container"></div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="data-heading">
+      <div class="section-head"><h2 id="data-heading">Δεδομένα και Backup</h2></div>
+      <div class="card">
+        <p class="muted" style="font-size:.9rem;margin-bottom:14px">
+          Όλα τα δεδομένα αποθηκεύονται τοπικά στον browser σου (localStorage). Κράτα τακτικά αντίγραφο ασφαλείας.
+        </p>
+        <div class="btn-row">
+          <button type="button" class="btn btn-sm" data-action="export-json">Εξαγωγή backup (JSON)</button>
+          <button type="button" class="btn btn-sm" data-action="import-json">Εισαγωγή backup</button>
+          <button type="button" class="btn btn-sm" data-action="export-csv-tx">Εξαγωγή συναλλαγών (CSV)</button>
+          <button type="button" class="btn btn-sm" data-action="export-csv-ledger">Εξαγωγή ιστορικού Balance (CSV)</button>
+          <button type="button" class="btn btn-sm btn-danger" data-action="wipe">Διαγραφή όλων των δεδομένων</button>
+        </div>
+        <div id="demo-slot" style="margin-top:14px"></div>
+        <input type="file" id="import-file" accept="application/json,.json" class="visually-hidden" tabindex="-1">
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="fab-bar"><button type="button" class="btn btn-primary" data-action="new-cycle">+ Νέος κύκλος</button></div>
+
+<div class="modal-backdrop" id="modal-root" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal">
+    <div class="modal-head">
+      <div>
+        <h2 id="modal-title"></h2>
+        <p id="modal-subtitle"></p>
+      </div>
+      <button type="button" class="modal-close" data-action="close-modal" aria-label="Κλείσιμο παραθύρου">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot" id="modal-foot"></div>
+  </div>
+</div>
+
+<div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+<div class="visually-hidden" id="live-region" role="status" aria-live="polite"></div>
+
+<script>
+/* ==========================================================================
+   FINANCIAL CYCLES — single-file offline personal finance tracker
+   UI text is Greek. Identifiers and comments are English.
+   Sections: config -> state -> money utils -> date utils -> cycle calculations
+   -> ledger calculations -> storage & migrations -> validation -> demo data
+   -> rendering -> filters/search -> modals & forms -> import/export
+   -> event listeners -> init
+   ========================================================================== */
+(function () {
+'use strict';
+
+/* ==== CORE START ==== (DOM-free region; dev/verify.mjs extracts and runs it) */
+
+/* --------------------------------------------------------------------------
+   SECTION 1 — CONFIG
+   -------------------------------------------------------------------------- */
+var APP_NAME = 'Financial Cycles';
+var STORAGE_KEY = 'financial-cycles.state.v1';
+var CURRENT_SCHEMA_VERSION = 1;
+var MAX_CENTS = 1e13;            // hard ceiling: 100 billion euro, guards overflow
+var CYCLE_TYPES = ['income', 'expense'];
+var PERIOD_TYPES = ['weekly', 'monthly', 'custom'];
+var LEDGER_TYPES = ['settlement', 'manual', 'reversal'];
+
+/* --------------------------------------------------------------------------
+   SECTION 2 — STATE FACTORIES
+   -------------------------------------------------------------------------- */
+function newId(prefix) {
+  var raw;
+  try {
+    if (typeof globalThis !== 'undefined' && globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function') {
+      raw = globalThis.crypto.randomUUID();
+    }
+  } catch (e) { /* fall through to the manual generator below */ }
+  if (!raw) {
+    raw = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0;
+      var v = c === 'x' ? r : ((r & 0x3) | 0x8);
+      return v.toString(16);
+    });
+  }
+  return (prefix ? prefix + '_' : '') + raw;
+}
+
+function nowISO() { return new Date().toISOString(); }
+
+function createDefaultState() {
+  return {
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    initialBalanceCents: 0,
+    cycles: [],
+    balanceLedger: [],
+    settings: { currency: 'EUR', locale: 'el-GR', theme: 'dark' }
+  };
+}
+
+function createCycle(data) {
+  var d = data || {};
+  var type = CYCLE_TYPES.indexOf(d.type) >= 0 ? d.type : 'expense';
+  return {
+    id: d.id || newId('cyc'),
+    title: String(d.title == null ? '' : d.title).trim(),
+    type: type,
+    periodType: PERIOD_TYPES.indexOf(d.periodType) >= 0 ? d.periodType : 'monthly',
+    startDate: d.startDate || '',
+    endDate: d.endDate || '',
+    targetAmountCents: toSafeCents(d.targetAmountCents),
+    category: String(d.category == null ? '' : d.category).trim(),
+    notes: String(d.notes == null ? '' : d.notes),
+    status: d.status === 'closed' ? 'closed' : 'open',
+    recurring: d.recurring === true,
+    overTargetIsNegative: typeof d.overTargetIsNegative === 'boolean'
+      ? d.overTargetIsNegative
+      : defaultOverTargetIsNegative(type),
+    transactions: Array.isArray(d.transactions) ? d.transactions.map(createTransaction) : [],
+    createdAt: d.createdAt || nowISO(),
+    updatedAt: d.updatedAt || nowISO(),
+    closedAt: d.closedAt || null,
+    closedTargetAmountCents: d.closedTargetAmountCents == null ? null : toSafeCents(d.closedTargetAmountCents),
+    closedActualAmountCents: d.closedActualAmountCents == null ? null : toSafeCents(d.closedActualAmountCents),
+    settlementId: d.settlementId || null,
+    settlementAdjustmentCents: toSafeCents(d.settlementAdjustmentCents)
+  };
+}
+
+function createTransaction(data) {
+  var d = data || {};
+  return {
+    id: d.id || newId('tx'),
+    amountCents: toSafeCents(d.amountCents),
+    date: d.date || '',
+    description: String(d.description == null ? '' : d.description).trim(),
+    notes: String(d.notes == null ? '' : d.notes),
+    createdAt: d.createdAt || nowISO(),
+    updatedAt: d.updatedAt || nowISO()
+  };
+}
+
+/* Expense cycles treat going over target as bad; income cycles treat it as good. */
+function defaultOverTargetIsNegative(type) { return type === 'expense'; }
+
+/* --------------------------------------------------------------------------
+   SECTION 3 — MONEY UTILS (everything is integer cents)
+   -------------------------------------------------------------------------- */
+function toSafeCents(value) {
+  var n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  n = Math.round(n);
+  if (Math.abs(n) > MAX_CENTS) return 0;
+  return n;
+}
+
+function assertCents(value, label) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || !Number.isInteger(value)) {
+    throw new Error('Expected integer cents for ' + (label || 'value') + ', got: ' + String(value));
+  }
+  return value;
+}
+
+function addCents(a, b) {
+  assertCents(a, 'a'); assertCents(b, 'b');
+  var sum = a + b;
+  if (!Number.isSafeInteger(sum)) throw new Error('Cent overflow');
+  return sum;
+}
+
+function subtractCents(a, b) {
+  assertCents(a, 'a'); assertCents(b, 'b');
+  var diff = a - b;
+  if (!Number.isSafeInteger(diff)) throw new Error('Cent overflow');
+  return diff;
+}
+
+function sumCents(list) {
+  var total = 0;
+  for (var i = 0; i < list.length; i++) total = addCents(total, toSafeCents(list[i]));
+  return total;
+}
+
+function centsToEuros(cents) { return toSafeCents(cents) / 100; }
+
+/* Validates thousands grouping such as 1.234.567 (first group 1-3 digits, rest exactly 3). */
+function hasValidGrouping(text, separator) {
+  var parts = text.split(separator);
+  if (parts.length < 2) return /^[0-9]+$/.test(text);
+  if (!/^[0-9]{1,3}$/.test(parts[0])) return false;
+  for (var i = 1; i < parts.length; i++) {
+    if (!/^[0-9]{3}$/.test(parts[i])) return false;
+  }
+  return true;
+}
+
+/*
+  Parses user input into integer cents.
+  Accepts: "10,50" "10.50" "1.000,50" "1000,50" "1,234,567.89" "€ 1.234,56" "-25"
+  Rejects (returns an error instead of guessing): "abc", "1.2.3", "", "Infinity",
+  "1,000" and "1.000" (ambiguous: could be 1000 or 1.000 depending on convention),
+  and anything with more than 2 decimal digits.
+*/
+function parseAmountResult(input) {
+  if (typeof input === 'number') {
+    if (!Number.isFinite(input)) return { ok: false, error: 'Το ποσό δεν είναι έγκυρος αριθμός.' };
+    var direct = Math.round(input * 100);
+    if (!Number.isSafeInteger(direct) || Math.abs(direct) > MAX_CENTS) {
+      return { ok: false, error: 'Το ποσό είναι εκτός των επιτρεπτών ορίων.' };
+    }
+    return { ok: true, cents: direct };
+  }
+  if (typeof input !== 'string') return { ok: false, error: 'Μη έγκυρο ποσό.' };
+
+  var s = input.replace(/[\s   €]/g, '');
+  if (s === '') return { ok: false, error: 'Συμπλήρωσε ποσό.' };
+
+  var sign = 1;
+  if (s.charAt(0) === '+') s = s.slice(1);
+  else if (s.charAt(0) === '-') { sign = -1; s = s.slice(1); }
+  if (s === '') return { ok: false, error: 'Συμπλήρωσε ποσό.' };
+
+  if (!/^[0-9.,]+$/.test(s)) {
+    return { ok: false, error: 'Το ποσό δέχεται μόνο ψηφία, τελεία και κόμμα (π.χ. 1.234,56).' };
+  }
+  if (!/[0-9]/.test(s)) return { ok: false, error: 'Το ποσό πρέπει να περιέχει ψηφία.' };
+
+  var dots = (s.match(/\./g) || []).length;
+  var commas = (s.match(/,/g) || []).length;
+  var intPart = '';
+  var decPart = '';
+  var ambiguous = 'Διφορούμενη μορφή ποσού. Γράψε π.χ. 1.000,50 ή 1000,50 ή 1000.';
+
+  if (dots > 0 && commas > 0) {
+    // Both separators present: the right-most one is the decimal separator.
+    var decSep = s.lastIndexOf('.') > s.lastIndexOf(',') ? '.' : ',';
+    var grpSep = decSep === '.' ? ',' : '.';
+    if ((decSep === '.' ? dots : commas) !== 1) return { ok: false, error: ambiguous };
+    var idx = s.lastIndexOf(decSep);
+    intPart = s.slice(0, idx);
+    decPart = s.slice(idx + 1);
+    if (!hasValidGrouping(intPart, grpSep)) return { ok: false, error: ambiguous };
+    intPart = intPart.split(grpSep).join('');
+  } else if (dots > 0 || commas > 0) {
+    var sep = dots > 0 ? '.' : ',';
+    var count = dots > 0 ? dots : commas;
+    var parts = s.split(sep);
+    var last = parts[parts.length - 1];
+    if (count === 1 && last.length !== 3) {
+      intPart = parts[0] === '' ? '0' : parts[0];
+      decPart = last;
+    } else if (count === 1) {
+      // Exactly three digits after a single separator — cannot tell decimals from grouping.
+      return { ok: false, error: ambiguous };
+    } else {
+      if (!hasValidGrouping(s, sep)) return { ok: false, error: ambiguous };
+      intPart = s.split(sep).join('');
+      decPart = '';
+    }
+  } else {
+    intPart = s;
+  }
+
+  if (!/^[0-9]+$/.test(intPart)) return { ok: false, error: ambiguous };
+  if (decPart !== '' && !/^[0-9]{1,2}$/.test(decPart)) {
+    return { ok: false, error: 'Χρησιμοποίησε το πολύ 2 δεκαδικά ψηφία.' };
+  }
+
+  var euros = Number(intPart);
+  var centsPart = decPart === '' ? 0 : Number((decPart + '00').slice(0, 2));
+  if (!Number.isFinite(euros)) return { ok: false, error: 'Το ποσό είναι εκτός των επιτρεπτών ορίων.' };
+  var cents = sign * (euros * 100 + centsPart);
+  if (!Number.isSafeInteger(cents) || Math.abs(cents) > MAX_CENTS) {
+    return { ok: false, error: 'Το ποσό είναι εκτός των επιτρεπτών ορίων.' };
+  }
+  return { ok: true, cents: cents };
+}
+
+/* Convenience wrapper: integer cents on success, null when the input is rejected. */
+function parseAmountToCents(input) {
+  var r = parseAmountResult(input);
+  return r.ok ? r.cents : null;
+}
+
+var _currencyFormatter = null;
+function getCurrencyFormatter() {
+  if (_currencyFormatter === null) {
+    try {
+      _currencyFormatter = new Intl.NumberFormat('el-GR', { style: 'currency', currency: 'EUR' });
+    } catch (e) {
+      _currencyFormatter = false;
+    }
+  }
+  return _currencyFormatter;
+}
+
+function formatCents(cents) {
+  var value = centsToEuros(cents);
+  var fmt = getCurrencyFormatter();
+  if (fmt) return fmt.format(value);
+  return value.toFixed(2).replace('.', ',') + ' €';
+}
+
+function formatSignedCents(cents) {
+  var c = toSafeCents(cents);
+  return (c > 0 ? '+' : '') + formatCents(c);
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 4 — DATE UTILS (all UTC-based so no timezone drift)
+   -------------------------------------------------------------------------- */
+function isLeapYear(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
+
+function daysInMonth(year, month) {
+  return [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+}
+
+function parseISODate(text) {
+  if (typeof text !== 'string') return null;
+  var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text.trim());
+  if (!m) return null;
+  var y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+  if (mo < 1 || mo > 12) return null;
+  if (d < 1 || d > daysInMonth(y, mo)) return null;
+  return { year: y, month: mo, day: d };
+}
+
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+function toISODate(year, month, day) { return year + '-' + pad2(month) + '-' + pad2(day); }
+
+function isValidISODate(text) { return parseISODate(text) !== null; }
+
+function addDaysISO(iso, days) {
+  var p = parseISODate(iso);
+  if (!p) throw new Error('Invalid ISO date: ' + iso);
+  var t = Date.UTC(p.year, p.month - 1, p.day) + days * 86400000;
+  var dt = new Date(t);
+  return toISODate(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+}
+
+/* Adds calendar months and clamps the day: 2024-01-31 + 1 month => 2024-02-29. */
+function addMonthsClampedISO(iso, months) {
+  var p = parseISODate(iso);
+  if (!p) throw new Error('Invalid ISO date: ' + iso);
+  var total = p.year * 12 + (p.month - 1) + months;
+  var year = Math.floor(total / 12);
+  var month = (total % 12 + 12) % 12 + 1;
+  var day = Math.min(p.day, daysInMonth(year, month));
+  return toISODate(year, month, day);
+}
+
+function diffDaysISO(fromISO, toISOStr) {
+  var a = parseISODate(fromISO), b = parseISODate(toISOStr);
+  if (!a || !b) throw new Error('Invalid ISO date');
+  return Math.round((Date.UTC(b.year, b.month - 1, b.day) - Date.UTC(a.year, a.month - 1, a.day)) / 86400000);
+}
+
+function todayISO() {
+  var d = new Date();
+  return toISODate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+}
+
+/* Monday..Sunday week that contains the given date. */
+function weekRangeFor(iso) {
+  var p = parseISODate(iso);
+  if (!p) return null;
+  var dow = new Date(Date.UTC(p.year, p.month - 1, p.day)).getUTCDay(); // 0=Sun
+  var offset = dow === 0 ? -6 : 1 - dow;
+  var start = addDaysISO(iso, offset);
+  return { startDate: start, endDate: addDaysISO(start, 6) };
+}
+
+/* First..last day of the month that contains the given date. */
+function monthRangeFor(iso) {
+  var p = parseISODate(iso);
+  if (!p) return null;
+  return {
+    startDate: toISODate(p.year, p.month, 1),
+    endDate: toISODate(p.year, p.month, daysInMonth(p.year, p.month))
+  };
+}
+
+/*
+  Next period for a recurring cycle.
+  weekly  : both dates + 7 days.
+  monthly : both dates + 1 calendar month with day clamping
+            (Jan 1 - Jan 31 => Feb 1 - Feb 28/29, never Mar 3).
+  custom  : the same span, starting the day after the previous end date.
+  Accepts either (periodType, startDate, endDate) or a single cycle-like object.
+*/
+function nextPeriodDates(periodType, startDate, endDate) {
+  if (periodType && typeof periodType === 'object') {
+    var c = periodType;
+    endDate = c.endDate; startDate = c.startDate; periodType = c.periodType;
+  }
+  if (!isValidISODate(startDate) || !isValidISODate(endDate)) throw new Error('Invalid period dates');
+  if (startDate > endDate) throw new Error('startDate must not be after endDate');
+  if (periodType === 'weekly') {
+    return { startDate: addDaysISO(startDate, 7), endDate: addDaysISO(endDate, 7) };
+  }
+  if (periodType === 'monthly') {
+    return { startDate: addMonthsClampedISO(startDate, 1), endDate: addMonthsClampedISO(endDate, 1) };
+  }
+  var span = diffDaysISO(startDate, endDate);
+  var nextStart = addDaysISO(endDate, 1);
+  return { startDate: nextStart, endDate: addDaysISO(nextStart, span) };
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 5 — CYCLE CALCULATIONS
+   -------------------------------------------------------------------------- */
+function getCycleActualAmountCents(cycle) {
+  if (!cycle || !Array.isArray(cycle.transactions)) return 0;
+  var total = 0;
+  for (var i = 0; i < cycle.transactions.length; i++) {
+    total = addCents(total, toSafeCents(cycle.transactions[i].amountCents));
+  }
+  return total;
+}
+
+/* Real percentage of target reached; can exceed 100. Rounded to one decimal. */
+function getCycleProgressPercent(cycle) {
+  var target = toSafeCents(cycle && cycle.targetAmountCents);
+  if (target <= 0) return 0;
+  var actual = getCycleActualAmountCents(cycle);
+  return Math.round((actual / target) * 1000) / 10;
+}
+
+/* Raw signed difference: actual minus target. Positive means "more than target". */
+function getCycleDifferenceCents(cycle) {
+  return subtractCents(getCycleActualAmountCents(cycle), toSafeCents(cycle && cycle.targetAmountCents));
+}
+
+/*
+  Status of a cycle relative to its target. Never colour-only:
+  every branch carries a Greek label that is rendered as text.
+*/
+function getCycleStatus(cycle) {
+  var percent = getCycleProgressPercent(cycle);
+  var overTargetIsNegative = cycle && typeof cycle.overTargetIsNegative === 'boolean'
+    ? cycle.overTargetIsNegative
+    : defaultOverTargetIsNegative(cycle && cycle.type);
+  if (percent > 100) {
+    if (overTargetIsNegative) {
+      return { key: 'over', label: 'Υπέρβαση', tone: 'red', percent: percent, ringOver: true };
+    }
+    return { key: 'surplus', label: 'Πλεόνασμα', tone: 'gold', percent: percent, ringOver: false };
+  }
+  return { key: 'within', label: 'Εντός στόχου', tone: 'green', percent: percent, ringOver: false };
+}
+
+/* Dynamic caption below the ring; text always states the direction explicitly. */
+function getCycleCaption(cycle) {
+  var actual = getCycleActualAmountCents(cycle);
+  var target = toSafeCents(cycle && cycle.targetAmountCents);
+  var over = actual > target;
+  var delta = Math.abs(actual - target);
+  var isExpense = cycle && cycle.type === 'expense';
+  if (isExpense) {
+    return over
+      ? { text: 'Έχεις υπερβεί το όριο κατά ' + formatCents(delta), tone: 'bad' }
+      : { text: 'Απομένουν ' + formatCents(delta) + ' μέχρι το όριο', tone: 'good' };
+  }
+  return over
+    ? { text: 'Έχεις ξεπεράσει τον στόχο κατά ' + formatCents(delta), tone: 'gold' }
+    : { text: 'Υπολείπονται ' + formatCents(delta) + ' μέχρι τον στόχο', tone: 'good' };
+}
+
+function isCycleOverdue(cycle, referenceISO) {
+  if (!cycle || cycle.status !== 'open') return false;
+  if (!isValidISODate(cycle.endDate)) return false;
+  return cycle.endDate < (referenceISO || todayISO());
+}
+
+/* Pure transaction operations — each returns a new cycle object. */
+function addTransactionToCycle(cycle, txData) {
+  var tx = createTransaction(txData);
+  return Object.assign({}, cycle, {
+    transactions: cycle.transactions.concat([tx]),
+    updatedAt: nowISO()
+  });
+}
+
+function updateTransactionInCycle(cycle, txId, patch) {
+  return Object.assign({}, cycle, {
+    transactions: cycle.transactions.map(function (t) {
+      if (t.id !== txId) return t;
+      return Object.assign({}, t, patch, { id: t.id, updatedAt: nowISO() });
+    }),
+    updatedAt: nowISO()
+  });
+}
+
+function removeTransactionFromCycle(cycle, txId) {
+  return Object.assign({}, cycle, {
+    transactions: cycle.transactions.filter(function (t) { return t.id !== txId; }),
+    updatedAt: nowISO()
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 6 — LEDGER CALCULATIONS (Balance is always derived, never stored)
+   -------------------------------------------------------------------------- */
+
+/* The single source of truth for how a cycle affects the Balance. */
+function calculateSettlementAdjustmentCents(cycle) {
+  var actual = getCycleActualAmountCents(cycle);
+  var target = cycle.targetAmountCents;
+  if (cycle.type === 'income') return actual - target;
+  if (cycle.type === 'expense') return target - actual;
+  throw new Error('Invalid cycle type');
+}
+
+function calculateCurrentBalanceCents(state) {
+  if (!state) return 0;
+  var total = toSafeCents(state.initialBalanceCents);
+  var ledger = Array.isArray(state.balanceLedger) ? state.balanceLedger : [];
+  for (var i = 0; i < ledger.length; i++) {
+    total = addCents(total, toSafeCents(ledger[i].adjustmentCents));
+  }
+  return total;
+}
+
+function createLedgerEntry(data) {
+  var d = data || {};
+  return {
+    id: d.id || newId('led'),
+    type: LEDGER_TYPES.indexOf(d.type) >= 0 ? d.type : 'manual',
+    cycleId: d.cycleId || null,
+    settlementId: d.settlementId || null,
+    description: String(d.description == null ? '' : d.description),
+    adjustmentCents: toSafeCents(d.adjustmentCents),
+    balanceBeforeCents: toSafeCents(d.balanceBeforeCents),
+    balanceAfterCents: toSafeCents(d.balanceAfterCents),
+    createdAt: d.createdAt || nowISO(),
+    effectiveDate: d.effectiveDate || todayISO()
+  };
+}
+
+/* Recomputes the running before/after columns so merged history stays coherent. */
+function recomputeLedgerBalances(initialBalanceCents, ledger) {
+  var running = toSafeCents(initialBalanceCents);
+  return ledger.map(function (entry) {
+    var before = running;
+    var after = addCents(before, toSafeCents(entry.adjustmentCents));
+    running = after;
+    return Object.assign({}, entry, { balanceBeforeCents: before, balanceAfterCents: after });
+  });
+}
+
+/*
+  Settles a cycle. Idempotent in two independent ways:
+   1. a cycle that is already closed can never be settled again;
+   2. a settlementId that already exists in the ledger is never applied twice.
+  Returns { state, applied, reason }. The input state is never mutated.
+*/
+function applySettlement(state, cycleId, settlementId, options) {
+  var opts = options || {};
+  var cycle = null;
+  for (var i = 0; i < state.cycles.length; i++) {
+    if (state.cycles[i].id === cycleId) { cycle = state.cycles[i]; break; }
+  }
+  if (!cycle) return { state: state, applied: false, reason: 'not-found' };
+  if (cycle.status === 'closed') return { state: state, applied: false, reason: 'already-closed' };
+
+  var sid = settlementId || newId('stl');
+  var duplicate = state.balanceLedger.some(function (e) {
+    return e.type === 'settlement' && e.settlementId === sid;
+  });
+  if (duplicate) return { state: state, applied: false, reason: 'duplicate-settlement' };
+
+  var actual = getCycleActualAmountCents(cycle);
+  var target = toSafeCents(cycle.targetAmountCents);
+  var adjustment = calculateSettlementAdjustmentCents(cycle);
+  var before = calculateCurrentBalanceCents(state);
+  var after = addCents(before, adjustment);
+  var stamp = nowISO();
+
+  var entry = createLedgerEntry({
+    type: 'settlement',
+    cycleId: cycle.id,
+    settlementId: sid,
+    description: 'Κλείσιμο κύκλου: ' + cycle.title,
+    adjustmentCents: adjustment,
+    balanceBeforeCents: before,
+    balanceAfterCents: after,
+    createdAt: stamp,
+    effectiveDate: opts.effectiveDate || todayISO()
+  });
+
+  var closedCycle = Object.assign({}, cycle, {
+    status: 'closed',
+    closedAt: stamp,
+    closedTargetAmountCents: target,
+    closedActualAmountCents: actual,
+    settlementId: sid,
+    settlementAdjustmentCents: adjustment,
+    updatedAt: stamp
+  });
+
+  var nextState = Object.assign({}, state, {
+    cycles: state.cycles.map(function (c) { return c.id === cycleId ? closedCycle : c; }),
+    balanceLedger: state.balanceLedger.concat([entry])
+  });
+
+  return {
+    state: nextState, applied: true, reason: 'ok',
+    entry: entry, cycle: closedCycle,
+    adjustmentCents: adjustment, balanceAfterCents: after
+  };
+}
+
+/*
+  Reopens a closed cycle by APPENDING a reversal entry (nothing is ever deleted).
+  The old settlementId stays on both ledger rows but is cleared from the cycle,
+  so a later close computes a brand new settlement from the new numbers.
+*/
+function reverseSettlement(state, cycleId) {
+  var cycle = null;
+  for (var i = 0; i < state.cycles.length; i++) {
+    if (state.cycles[i].id === cycleId) { cycle = state.cycles[i]; break; }
+  }
+  if (!cycle) return { state: state, applied: false, reason: 'not-found' };
+  if (cycle.status !== 'closed' || !cycle.settlementId) {
+    return { state: state, applied: false, reason: 'not-closed' };
+  }
+  var sid = cycle.settlementId;
+  var alreadyReversed = state.balanceLedger.some(function (e) {
+    return e.type === 'reversal' && e.settlementId === sid;
+  });
+  if (alreadyReversed) return { state: state, applied: false, reason: 'duplicate-reversal' };
+
+  var adjustment = -toSafeCents(cycle.settlementAdjustmentCents);
+  var before = calculateCurrentBalanceCents(state);
+  var after = addCents(before, adjustment);
+  var stamp = nowISO();
+
+  var entry = createLedgerEntry({
+    type: 'reversal',
+    cycleId: cycle.id,
+    settlementId: sid,
+    description: 'Επαναφορά κλεισίματος: ' + cycle.title,
+    adjustmentCents: adjustment,
+    balanceBeforeCents: before,
+    balanceAfterCents: after,
+    createdAt: stamp,
+    effectiveDate: todayISO()
+  });
+
+  var reopened = Object.assign({}, cycle, {
+    status: 'open',
+    closedAt: null,
+    closedTargetAmountCents: null,
+    closedActualAmountCents: null,
+    settlementId: null,
+    settlementAdjustmentCents: 0,
+    updatedAt: stamp
+  });
+
+  return {
+    state: Object.assign({}, state, {
+      cycles: state.cycles.map(function (c) { return c.id === cycleId ? reopened : c; }),
+      balanceLedger: state.balanceLedger.concat([entry])
+    }),
+    applied: true, reason: 'ok', entry: entry, cycle: reopened, adjustmentCents: adjustment
+  };
+}
+
+function addManualAdjustment(state, data) {
+  var amount = toSafeCents(data.adjustmentCents);
+  var before = calculateCurrentBalanceCents(state);
+  var entry = createLedgerEntry({
+    type: 'manual',
+    description: data.description || 'Χειροκίνητη προσαρμογή',
+    adjustmentCents: amount,
+    balanceBeforeCents: before,
+    balanceAfterCents: addCents(before, amount),
+    effectiveDate: data.effectiveDate || todayISO()
+  });
+  return {
+    state: Object.assign({}, state, { balanceLedger: state.balanceLedger.concat([entry]) }),
+    applied: true, entry: entry
+  };
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 7 — STORAGE SHAPE & MIGRATIONS
+   -------------------------------------------------------------------------- */
+
+/*
+  Brings any stored payload up to the current schema version.
+  Unknown/older versions are upgraded step by step through MIGRATIONS;
+  newer-than-current payloads are kept as-is but normalized defensively.
+*/
+var MIGRATIONS = {
+  // Example for the future:
+  // 1: function (state) { state.schemaVersion = 2; return state; }
+};
+
+function migrate(rawState) {
+  if (!rawState || typeof rawState !== 'object' || Array.isArray(rawState)) {
+    return createDefaultState();
+  }
+  var state = Object.assign({}, rawState);
+  var version = Number(state.schemaVersion);
+  if (!Number.isFinite(version) || version < 1) version = 1;
+  while (version < CURRENT_SCHEMA_VERSION && MIGRATIONS[version]) {
+    state = MIGRATIONS[version](state);
+    version = Number(state.schemaVersion) || version + 1;
+  }
+  state.schemaVersion = CURRENT_SCHEMA_VERSION;
+  return normalizeState(state);
+}
+
+function normalizeState(state) {
+  var base = createDefaultState();
+  var cycles = Array.isArray(state.cycles) ? state.cycles : [];
+  var ledger = Array.isArray(state.balanceLedger) ? state.balanceLedger : [];
+  var settings = state.settings && typeof state.settings === 'object' ? state.settings : {};
+  return {
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    initialBalanceCents: toSafeCents(state.initialBalanceCents),
+    cycles: cycles.filter(function (c) { return c && typeof c === 'object'; }).map(createCycle),
+    balanceLedger: ledger.filter(function (e) { return e && typeof e === 'object'; }).map(createLedgerEntry),
+    settings: {
+      currency: settings.currency || base.settings.currency,
+      locale: settings.locale || base.settings.locale,
+      theme: settings.theme === 'light' ? 'light' : 'dark'
+    }
+  };
+}
+
+/*
+  Merge import: nothing that already exists by id is ever duplicated.
+  Existing cycles keep their own data (a differing payload is counted as a conflict)
+  but gain any transactions whose ids are new.
+*/
+function mergeImport(currentState, incomingState) {
+  var base = migrate(currentState);
+  var incoming = migrate(incomingState);
+  var summary = {
+    importedCycles: 0, skippedCycles: 0,
+    importedTransactions: 0, skippedTransactions: 0,
+    importedLedgerEntries: 0, skippedLedgerEntries: 0,
+    conflicts: 0
+  };
+
+  var cycles = base.cycles.map(function (c) {
+    return Object.assign({}, c, { transactions: c.transactions.slice() });
+  });
+  var byId = {};
+  cycles.forEach(function (c) { byId[c.id] = c; });
+
+  incoming.cycles.forEach(function (ic) {
+    var existing = byId[ic.id];
+    if (!existing) {
+      var copy = Object.assign({}, ic, { transactions: ic.transactions.slice() });
+      cycles.push(copy);
+      byId[copy.id] = copy;
+      summary.importedCycles++;
+      summary.importedTransactions += copy.transactions.length;
+      return;
+    }
+    summary.skippedCycles++;
+    if (!cyclesAreEquivalent(existing, ic)) summary.conflicts++;
+    var txIds = {};
+    existing.transactions.forEach(function (t) { txIds[t.id] = true; });
+    ic.transactions.forEach(function (t) {
+      if (txIds[t.id]) { summary.skippedTransactions++; return; }
+      existing.transactions.push(Object.assign({}, t));
+      txIds[t.id] = true;
+      summary.importedTransactions++;
+    });
+  });
+
+  var ledger = base.balanceLedger.slice();
+  var entryIds = {};
+  var settlementKeys = {};
+  ledger.forEach(function (e) {
+    entryIds[e.id] = true;
+    if (e.settlementId) settlementKeys[e.type + ':' + e.settlementId] = true;
+  });
+  incoming.balanceLedger.forEach(function (e) {
+    var key = e.settlementId ? e.type + ':' + e.settlementId : null;
+    if (entryIds[e.id] || (key && settlementKeys[key])) { summary.skippedLedgerEntries++; return; }
+    ledger.push(Object.assign({}, e));
+    entryIds[e.id] = true;
+    if (key) settlementKeys[key] = true;
+    summary.importedLedgerEntries++;
+  });
+
+  ledger.sort(function (a, b) { return String(a.createdAt).localeCompare(String(b.createdAt)); });
+  ledger = recomputeLedgerBalances(base.initialBalanceCents, ledger);
+
+  return {
+    state: Object.assign({}, base, { cycles: cycles, balanceLedger: ledger }),
+    summary: summary
+  };
+}
+
+function cyclesAreEquivalent(a, b) {
+  return a.title === b.title
+    && a.type === b.type
+    && a.periodType === b.periodType
+    && a.startDate === b.startDate
+    && a.endDate === b.endDate
+    && toSafeCents(a.targetAmountCents) === toSafeCents(b.targetAmountCents)
+    && a.status === b.status;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 8 — VALIDATION (Greek messages, keyed by field)
+   -------------------------------------------------------------------------- */
+function validateCycleInput(input) {
+  var errors = {};
+  var title = String(input.title || '').trim();
+  if (!title) errors.title = 'Ο τίτλος είναι υποχρεωτικός.';
+  else if (title.length > 120) errors.title = 'Ο τίτλος δεν μπορεί να ξεπερνά τους 120 χαρακτήρες.';
+
+  if (CYCLE_TYPES.indexOf(input.type) < 0) errors.type = 'Διάλεξε τύπο κύκλου.';
+  if (PERIOD_TYPES.indexOf(input.periodType) < 0) errors.periodType = 'Διάλεξε τύπο περιόδου.';
+
+  var amount = parseAmountResult(input.targetAmount == null ? '' : input.targetAmount);
+  if (!amount.ok) errors.targetAmount = amount.error;
+  else if (amount.cents <= 0) errors.targetAmount = 'Το ποσό-στόχος πρέπει να είναι μεγαλύτερο από 0.';
+
+  if (!isValidISODate(input.startDate)) errors.startDate = 'Δώσε έγκυρη ημερομηνία έναρξης.';
+  if (!isValidISODate(input.endDate)) errors.endDate = 'Δώσε έγκυρη ημερομηνία λήξης.';
+  if (!errors.startDate && !errors.endDate && input.startDate > input.endDate) {
+    errors.endDate = 'Η ημερομηνία λήξης δεν μπορεί να είναι πριν την έναρξη.';
+  }
+  if (String(input.category || '').length > 60) errors.category = 'Η κατηγορία δεν μπορεί να ξεπερνά τους 60 χαρακτήρες.';
+  if (String(input.notes || '').length > 2000) errors.notes = 'Οι σημειώσεις δεν μπορούν να ξεπερνούν τους 2000 χαρακτήρες.';
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors: errors,
+    value: amount.ok ? { targetAmountCents: amount.cents } : null
+  };
+}
+
+function validateTransactionInput(input) {
+  var errors = {};
+  var amount = parseAmountResult(input.amount == null ? '' : input.amount);
+  if (!amount.ok) errors.amount = amount.error;
+  else if (amount.cents <= 0) errors.amount = 'Το ποσό πρέπει να είναι μεγαλύτερο από 0.';
+
+  if (!isValidISODate(input.date)) errors.date = 'Δώσε έγκυρη ημερομηνία.';
+  if (String(input.description || '').trim().length > 140) {
+    errors.description = 'Η περιγραφή δεν μπορεί να ξεπερνά τους 140 χαρακτήρες.';
+  }
+  if (String(input.notes || '').length > 1000) errors.notes = 'Οι σημειώσεις δεν μπορούν να ξεπερνούν τους 1000 χαρακτήρες.';
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors: errors,
+    value: amount.ok ? { amountCents: amount.cents } : null
+  };
+}
+
+function validateManualAdjustmentInput(input) {
+  var errors = {};
+  var amount = parseAmountResult(input.amount == null ? '' : input.amount);
+  if (!amount.ok) errors.amount = amount.error;
+  else if (amount.cents === 0) errors.amount = 'Η προσαρμογή δεν μπορεί να είναι 0.';
+  if (!String(input.description || '').trim()) errors.description = 'Η περιγραφή είναι υποχρεωτική.';
+  if (!isValidISODate(input.date)) errors.date = 'Δώσε έγκυρη ημερομηνία.';
+  return { ok: Object.keys(errors).length === 0, errors: errors, value: amount.ok ? { adjustmentCents: amount.cents } : null };
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 9 — DEMO DATA (pure builder; never loaded automatically)
+   -------------------------------------------------------------------------- */
+function buildDemoState(referenceISO) {
+  var today = referenceISO || todayISO();
+  var month = monthRangeFor(today);
+  var week = weekRangeFor(today);
+  var state = createDefaultState();
+  state.initialBalanceCents = 150000;
+
+  function tx(amount, day, desc) {
+    return createTransaction({ amountCents: amount, date: day, description: desc });
+  }
+
+  state.cycles = [
+    createCycle({
+      title: 'Μισθός μήνα', type: 'income', periodType: 'monthly',
+      startDate: month.startDate, endDate: month.endDate,
+      targetAmountCents: 180000, category: 'Εργασία', recurring: true,
+      notes: 'Κύριο εισόδημα του μήνα.',
+      transactions: [
+        tx(90000, month.startDate, 'Πρώτο δεκαπενθήμερο'),
+        tx(60000, addDaysISO(month.startDate, 14), 'Δεύτερο δεκαπενθήμερο')
+      ]
+    }),
+    createCycle({
+      title: 'Freelance έργα', type: 'income', periodType: 'monthly',
+      startDate: month.startDate, endDate: month.endDate,
+      targetAmountCents: 50000, category: 'Πάρεργο', recurring: false,
+      notes: 'Στόχος που ξεπεράστηκε — μετράει ως πλεόνασμα.',
+      transactions: [
+        tx(40000, addDaysISO(month.startDate, 3), 'Σχεδιασμός ιστοσελίδας'),
+        tx(30000, addDaysISO(month.startDate, 9), 'Συντήρηση εφαρμογής')
+      ]
+    }),
+    createCycle({
+      title: 'Σούπερ μάρκετ εβδομάδας', type: 'expense', periodType: 'weekly',
+      startDate: week.startDate, endDate: week.endDate,
+      targetAmountCents: 12000, category: 'Τρόφιμα', recurring: true,
+      notes: 'Όριο εβδομάδας για τρόφιμα.',
+      transactions: [
+        tx(4550, week.startDate, 'Εβδομαδιαία αγορά'),
+        tx(2310, addDaysISO(week.startDate, 2), 'Φρούτα και λαχανικά')
+      ]
+    }),
+    createCycle({
+      title: 'Διασκέδαση μήνα', type: 'expense', periodType: 'monthly',
+      startDate: month.startDate, endDate: month.endDate,
+      targetAmountCents: 15000, category: 'Ελεύθερος χρόνος', recurring: false,
+      notes: 'Ξεπερασμένο όριο — εμφανίζεται ως υπέρβαση.',
+      transactions: [
+        tx(8000, addDaysISO(month.startDate, 4), 'Δείπνο έξω'),
+        tx(6500, addDaysISO(month.startDate, 11), 'Συναυλία'),
+        tx(4000, addDaysISO(month.startDate, 16), 'Σινεμά και ποτό')
+      ]
+    })
+  ];
+  return state;
+}
+
+/* --------------------------------------------------------------------------
+   CORE EXPORTS — consumed by the UI below and by dev/verify.mjs
+   -------------------------------------------------------------------------- */
+globalThis.FinancialCyclesCore = {
+  // required surface
+  parseAmountToCents: parseAmountToCents,
+  formatCents: formatCents,
+  getCycleActualAmountCents: getCycleActualAmountCents,
+  getCycleProgressPercent: getCycleProgressPercent,
+  getCycleDifferenceCents: getCycleDifferenceCents,
+  getCycleStatus: getCycleStatus,
+  calculateSettlementAdjustmentCents: calculateSettlementAdjustmentCents,
+  calculateCurrentBalanceCents: calculateCurrentBalanceCents,
+  nextPeriodDates: nextPeriodDates,
+  mergeImport: mergeImport,
+  // supporting pure helpers (state transitions, factories, validation)
+  parseAmountResult: parseAmountResult,
+  formatSignedCents: formatSignedCents,
+  addCents: addCents,
+  subtractCents: subtractCents,
+  sumCents: sumCents,
+  centsToEuros: centsToEuros,
+  toSafeCents: toSafeCents,
+  isLeapYear: isLeapYear,
+  daysInMonth: daysInMonth,
+  addDaysISO: addDaysISO,
+  addMonthsClampedISO: addMonthsClampedISO,
+  diffDaysISO: diffDaysISO,
+  isValidISODate: isValidISODate,
+  weekRangeFor: weekRangeFor,
+  monthRangeFor: monthRangeFor,
+  todayISO: todayISO,
+  getCycleCaption: getCycleCaption,
+  isCycleOverdue: isCycleOverdue,
+  createDefaultState: createDefaultState,
+  createCycle: createCycle,
+  createTransaction: createTransaction,
+  createLedgerEntry: createLedgerEntry,
+  addTransactionToCycle: addTransactionToCycle,
+  updateTransactionInCycle: updateTransactionInCycle,
+  removeTransactionFromCycle: removeTransactionFromCycle,
+  applySettlement: applySettlement,
+  reverseSettlement: reverseSettlement,
+  addManualAdjustment: addManualAdjustment,
+  recomputeLedgerBalances: recomputeLedgerBalances,
+  migrate: migrate,
+  normalizeState: normalizeState,
+  validateCycleInput: validateCycleInput,
+  validateTransactionInput: validateTransactionInput,
+  validateManualAdjustmentInput: validateManualAdjustmentInput,
+  buildDemoState: buildDemoState,
+  newId: newId,
+  CURRENT_SCHEMA_VERSION: CURRENT_SCHEMA_VERSION,
+  APP_NAME: APP_NAME
+};
+
+/* ==== CORE END ==== */
+
+/* --------------------------------------------------------------------------
+   SECTION 10 — APP STATE, PERSISTENCE, CORRUPTED STORAGE HANDLING
+   -------------------------------------------------------------------------- */
+var appState = createDefaultState();
+
+/* Set when stored data cannot be read. While set, writes are blocked so the
+   original (possibly recoverable) raw string is never overwritten. */
+var storageError = null;
+
+var ui = {
+  filter: 'all',
+  query: '',
+  expanded: Object.create(null),
+  pendingImport: null
+};
+
+var FILTERS = [
+  { id: 'all', label: 'Όλα' },
+  { id: 'open', label: 'Ανοιχτά' },
+  { id: 'closed', label: 'Κλειστά' },
+  { id: 'income', label: 'Έσοδα' },
+  { id: 'expense', label: 'Έξοδα' },
+  { id: 'weekly', label: 'Εβδομαδιαία' },
+  { id: 'monthly', label: 'Μηνιαία' }
+];
+
+function readStorage() {
+  var raw = null;
+  try {
+    raw = window.localStorage.getItem(STORAGE_KEY);
+  } catch (e) {
+    storageError = {
+      message: 'Ο browser δεν επιτρέπει πρόσβαση στην τοπική αποθήκευση. Οι αλλαγές σου δεν θα αποθηκευτούν.',
+      raw: ''
+    };
+    return createDefaultState();
+  }
+  if (raw === null || raw === '') return createDefaultState();
+
+  var parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    storageError = {
+      message: 'Τα αποθηκευμένα δεδομένα είναι κατεστραμμένα και δεν μπορούν να διαβαστούν (σφάλμα JSON).',
+      raw: raw
+    };
+    return createDefaultState();
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !Array.isArray(parsed.cycles)) {
+    storageError = {
+      message: 'Τα αποθηκευμένα δεδομένα δεν έχουν την αναμενόμενη μορφή.',
+      raw: raw
+    };
+    return createDefaultState();
+  }
+  try {
+    return migrate(parsed);
+  } catch (e) {
+    storageError = {
+      message: 'Τα αποθηκευμένα δεδομένα δεν μπόρεσαν να μετατραπούν στην τρέχουσα έκδοση.',
+      raw: raw
+    };
+    return createDefaultState();
+  }
+}
+
+function persist() {
+  if (storageError) {
+    showToast('Η αποθήκευση είναι παγωμένη μέχρι να λυθεί το πρόβλημα με τα κατεστραμμένα δεδομένα.', 'error');
+    return false;
+  }
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    return true;
+  } catch (e) {
+    showToast('Δεν ήταν δυνατή η αποθήκευση. Ο αποθηκευτικός χώρος του browser μπορεί να είναι γεμάτος.', 'error');
+    return false;
+  }
+}
+
+/* Single write path: replace the state, persist it, re-render everything. */
+function commit(nextState, toastMessage, toastKind) {
+  appState = nextState;
+  persist();
+  render();
+  if (toastMessage) showToast(toastMessage, toastKind || 'success');
+}
+
+function findCycle(cycleId) {
+  for (var i = 0; i < appState.cycles.length; i++) {
+    if (appState.cycles[i].id === cycleId) return appState.cycles[i];
+  }
+  return null;
+}
+
+function replaceCycle(state, cycle) {
+  return Object.assign({}, state, {
+    cycles: state.cycles.map(function (c) { return c.id === cycle.id ? cycle : c; })
+  });
+}
+
+function hasUserData() {
+  return appState.cycles.length > 0
+    || appState.balanceLedger.length > 0
+    || appState.initialBalanceCents !== 0;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 11 — RENDERING HELPERS (every user string goes through esc())
+   -------------------------------------------------------------------------- */
+var $ = function (sel) { return document.querySelector(sel); };
+
+function esc(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatDateGR(iso) {
+  var p = parseISODate(iso);
+  if (!p) return '—';
+  return pad2(p.day) + '/' + pad2(p.month) + '/' + p.year;
+}
+
+function formatDateTimeGR(isoStamp) {
+  if (!isoStamp) return '—';
+  var d = new Date(isoStamp);
+  if (isNaN(d.getTime())) return '—';
+  return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear()
+    + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+
+var PERIOD_LABELS = { weekly: 'Εβδομαδιαίος', monthly: 'Μηνιαίος', custom: 'Προσαρμοσμένος' };
+var TYPE_LABELS = { income: 'Έσοδο', expense: 'Έξοδο' };
+var LEDGER_LABELS = { settlement: 'Κλείσιμο κύκλου', manual: 'Χειροκίνητη προσαρμογή', reversal: 'Επαναφορά κλεισίματος' };
+
+function showToast(message, kind) {
+  var region = $('#toast-region');
+  if (!region) return;
+  var el = document.createElement('div');
+  el.className = 'toast ' + (kind || 'info');
+  el.textContent = message;
+  region.appendChild(el);
+  window.setTimeout(function () {
+    if (el.parentNode) el.parentNode.removeChild(el);
+  }, 4200);
+}
+
+function announce(message) {
+  var region = $('#live-region');
+  if (region) region.textContent = message;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 12 — RENDERING
+   -------------------------------------------------------------------------- */
+function render() {
+  renderStorageAlert();
+  renderBalance();
+  renderStats();
+  renderFilters();
+  renderCycles();
+  renderLedger();
+  renderDemoSlot();
+  renderThemeButton();
+}
+
+function renderStorageAlert() {
+  var host = $('#storage-alert');
+  if (!storageError) { host.innerHTML = ''; return; }
+  host.innerHTML =
+    '<div class="alert">'
+    + '<h2>Πρόβλημα με τα αποθηκευμένα δεδομένα</h2>'
+    + '<p>' + esc(storageError.message) + ' Τα αρχικά δεδομένα διατηρούνται ανέπαφα και καμία νέα αποθήκευση δεν γίνεται μέχρι να αποφασίσεις.</p>'
+    + (storageError.raw
+      ? '<pre>' + esc(storageError.raw.slice(0, 1500)) + (storageError.raw.length > 1500 ? '\n… (συνεχίζεται)' : '') + '</pre>'
+      : '')
+    + '<div class="btn-row" style="margin-top:12px">'
+    + '<button type="button" class="btn btn-sm" data-action="export-raw">Εξαγωγή ακατέργαστων δεδομένων</button>'
+    + '<button type="button" class="btn btn-sm btn-danger" data-action="reset-corrupted">Επαναφορά από την αρχή</button>'
+    + '</div></div>';
+}
+
+function renderBalance() {
+  var cents = calculateCurrentBalanceCents(appState);
+  var el = $('#balance-amount');
+  el.textContent = formatCents(cents);
+  el.className = 'balance-amount ' + (cents < 0 ? 'neg' : cents > 0 ? 'pos' : '');
+}
+
+function renderStats() {
+  var openCycles = appState.cycles.filter(function (c) { return c.status === 'open'; });
+  var closedCycles = appState.cycles.filter(function (c) { return c.status === 'closed'; });
+  var incomeTargets = sumCents(openCycles.filter(function (c) { return c.type === 'income'; })
+    .map(function (c) { return c.targetAmountCents; }));
+  var expenseTargets = sumCents(openCycles.filter(function (c) { return c.type === 'expense'; })
+    .map(function (c) { return c.targetAmountCents; }));
+  var recordedIncome = sumCents(appState.cycles.filter(function (c) { return c.type === 'income'; })
+    .map(getCycleActualAmountCents));
+  var recordedExpenses = sumCents(appState.cycles.filter(function (c) { return c.type === 'expense'; })
+    .map(getCycleActualAmountCents));
+  var balance = calculateCurrentBalanceCents(appState);
+
+  var cards = [
+    { label: 'Τρέχον Balance', value: formatCents(balance), tone: balance < 0 ? 'red' : 'green' },
+    { label: 'Ανοιχτοί κύκλοι', value: String(openCycles.length), tone: '' },
+    { label: 'Κλειστοί κύκλοι', value: String(closedCycles.length), tone: '' },
+    { label: 'Στόχοι εσόδων (ενεργοί)', value: formatCents(incomeTargets), tone: 'green' },
+    { label: 'Όρια εξόδων (ενεργά)', value: formatCents(expenseTargets), tone: 'red' },
+    { label: 'Καταγεγραμμένα έσοδα', value: formatCents(recordedIncome), tone: 'green' },
+    { label: 'Καταγεγραμμένα έξοδα', value: formatCents(recordedExpenses), tone: 'red' }
+  ];
+
+  $('#stats-grid').innerHTML = cards.map(function (c) {
+    return '<div class="stat"><div class="stat-label">' + esc(c.label) + '</div>'
+      + '<div class="stat-value ' + c.tone + '">' + esc(c.value) + '</div></div>';
+  }).join('');
+}
+
+function renderFilters() {
+  $('#filter-row').innerHTML = FILTERS.map(function (f) {
+    return '<button type="button" class="chip" data-action="filter" data-filter="' + esc(f.id) + '"'
+      + ' aria-pressed="' + (ui.filter === f.id ? 'true' : 'false') + '">' + esc(f.label) + '</button>';
+  }).join('');
+}
+
+/* --- progress ring ------------------------------------------------------- */
+var RING_RADIUS = 52;
+var RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+function ringStatusText(cycle) {
+  var status = getCycleStatus(cycle);
+  var excess = getCycleActualAmountCents(cycle) - toSafeCents(cycle.targetAmountCents);
+  if (status.key === 'over') return 'Υπέρβαση: ' + formatCents(excess);
+  if (status.key === 'surplus') return 'Πλεόνασμα: ' + formatSignedCents(excess);
+  return 'Εντός στόχου';
+}
+
+function renderRing(cycle) {
+  var status = getCycleStatus(cycle);
+  var actual = getCycleActualAmountCents(cycle);
+  var target = toSafeCents(cycle.targetAmountCents);
+  var fraction = Math.max(0, Math.min(1, status.percent / 100));
+  var offset = RING_CIRCUMFERENCE - RING_CIRCUMFERENCE * (status.ringOver ? 1 : fraction);
+  var statusText = ringStatusText(cycle);
+  var toneClass = status.tone === 'red' ? 'badge-red' : status.tone === 'gold' ? 'badge-gold' : 'badge-green';
+  var alt = 'Πρόοδος κύκλου ' + cycle.title + ': ' + status.percent + '% του στόχου, '
+    + formatCents(actual) + ' από ' + formatCents(target) + '. Κατάσταση: ' + statusText + '.';
+
+  return '<div class="ring-wrap">'
+    + '<svg class="ring" viewBox="0 0 120 120" role="img" aria-label="' + esc(alt) + '">'
+    + '<circle class="ring-track" cx="60" cy="60" r="' + RING_RADIUS + '" fill="none" stroke-width="11"></circle>'
+    + '<circle class="ring-fill' + (status.ringOver ? ' over' : '') + '" cx="60" cy="60" r="' + RING_RADIUS + '"'
+    + ' fill="none" stroke-width="11" stroke-linecap="round"'
+    + ' stroke-dasharray="' + RING_CIRCUMFERENCE.toFixed(3) + '"'
+    + ' stroke-dashoffset="' + offset.toFixed(3) + '"'
+    + ' transform="rotate(-90 60 60)"></circle>'
+    + '<text class="ring-pct" x="60" y="58" text-anchor="middle">' + esc(status.percent) + '%</text>'
+    + '<text class="ring-amounts" x="60" y="76" text-anchor="middle">'
+    + esc(formatCents(actual)) + ' / ' + esc(formatCents(target)) + '</text>'
+    + '</svg>'
+    + '<span class="badge ' + toneClass + ' ring-status">' + esc(statusText) + '</span>'
+    + '</div>';
+}
+
+function renderCaption(cycle) {
+  var caption = getCycleCaption(cycle);
+  return '<p class="ring-caption ' + caption.tone + '">' + esc(caption.text) + '</p>';
+}
+
+/* --- transactions -------------------------------------------------------- */
+function renderTransactions(cycle) {
+  var locked = cycle.status === 'closed';
+  var sorted = cycle.transactions.slice().sort(function (a, b) {
+    if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+    return String(b.createdAt).localeCompare(String(a.createdAt));
+  });
+
+  var head = '<div class="btn-row" style="justify-content:space-between;align-items:center">'
+    + '<strong style="font-size:.92rem">Συναλλαγές (' + sorted.length + ')</strong>'
+    + (locked
+      ? '<span class="badge badge-gray">Κλειδωμένες — ο κύκλος είναι κλειστός</span>'
+      : '<button type="button" class="btn btn-sm btn-primary" data-action="add-tx" data-cycle="' + esc(cycle.id) + '">+ Νέα συναλλαγή</button>')
+    + '</div>';
+
+  if (!sorted.length) {
+    return '<div class="tx-panel">' + head
+      + '<p class="faint" style="margin-top:10px">Δεν υπάρχουν ακόμη συναλλαγές σε αυτόν τον κύκλο.</p></div>';
+  }
+
+  var items = sorted.map(function (t) {
+    return '<li class="tx-item">'
+      + '<div class="tx-main">'
+      + '<div class="tx-desc">' + esc(t.description || 'Χωρίς περιγραφή') + '</div>'
+      + '<div class="tx-date">' + esc(formatDateGR(t.date)) + '</div>'
+      + (t.notes ? '<div class="tx-notes">' + esc(t.notes) + '</div>' : '')
+      + '</div>'
+      + '<div class="tx-amount ' + esc(cycle.type) + '">' + esc(formatCents(t.amountCents)) + '</div>'
+      + (locked ? '' : '<div class="tx-actions">'
+        + '<button type="button" class="icon-btn" data-action="edit-tx" data-cycle="' + esc(cycle.id) + '" data-tx="' + esc(t.id) + '"'
+        + ' aria-label="Επεξεργασία συναλλαγής ' + esc(t.description || formatCents(t.amountCents)) + '">✎</button>'
+        + '<button type="button" class="icon-btn danger" data-action="delete-tx" data-cycle="' + esc(cycle.id) + '" data-tx="' + esc(t.id) + '"'
+        + ' aria-label="Διαγραφή συναλλαγής ' + esc(t.description || formatCents(t.amountCents)) + '">🗑</button>'
+        + '</div>')
+      + '</li>';
+  }).join('');
+
+  return '<div class="tx-panel">' + head + '<ul class="tx-list">' + items + '</ul></div>';
+}
+
+/* --- cycle card ---------------------------------------------------------- */
+function renderCycleCard(cycle) {
+  var isClosed = cycle.status === 'closed';
+  var overdue = isCycleOverdue(cycle);
+  var expanded = ui.expanded[cycle.id] === true;
+
+  var badges = [
+    '<span class="badge ' + (cycle.type === 'income' ? 'badge-green' : 'badge-red') + '">' + esc(TYPE_LABELS[cycle.type]) + '</span>',
+    '<span class="badge ' + (isClosed ? 'badge-gray' : 'badge-accent') + '">' + (isClosed ? 'Κλειστός' : 'Ανοιχτός') + '</span>',
+    '<span class="badge badge-gray">' + esc(PERIOD_LABELS[cycle.periodType]) + '</span>'
+  ];
+  if (overdue) badges.push('<span class="badge badge-gold">Εκπρόθεσμος</span>');
+  if (cycle.recurring) badges.push('<span class="badge badge-gray">Επαναλαμβανόμενος</span>');
+  if (cycle.category) badges.push('<span class="badge badge-gray">' + esc(cycle.category) + '</span>');
+
+  var settlementBlock = '';
+  if (isClosed) {
+    var adj = toSafeCents(cycle.settlementAdjustmentCents);
+    settlementBlock = '<div class="settle-summary">'
+      + '<dl class="kv"><dt>Έκλεισε στις</dt><dd>' + esc(formatDateTimeGR(cycle.closedAt)) + '</dd></dl>'
+      + '<dl class="kv"><dt>Στόχος κατά το κλείσιμο</dt><dd>' + esc(formatCents(cycle.closedTargetAmountCents)) + '</dd></dl>'
+      + '<dl class="kv"><dt>Πραγματικό ποσό</dt><dd>' + esc(formatCents(cycle.closedActualAmountCents)) + '</dd></dl>'
+      + '<dl class="kv"><dt>Επίδραση στο Balance</dt><dd class="' + (adj < 0 ? 'neg' : 'pos') + '">'
+      + esc(formatSignedCents(adj)) + ' — ' + (adj < 0 ? 'Έλλειμμα' : 'Πλεόνασμα') + '</dd></dl>'
+      + '</div>';
+  }
+
+  var actions = [];
+  if (!isClosed) {
+    actions.push('<button type="button" class="btn btn-sm btn-primary" data-action="add-tx" data-cycle="' + esc(cycle.id) + '">+ Νέα συναλλαγή</button>');
+    actions.push('<button type="button" class="btn btn-sm" data-action="settle" data-cycle="' + esc(cycle.id) + '">Κλείσιμο κύκλου</button>');
+    actions.push('<button type="button" class="btn btn-sm" data-action="edit-cycle" data-cycle="' + esc(cycle.id) + '">Επεξεργασία</button>');
+  } else {
+    actions.push('<button type="button" class="btn btn-sm" data-action="reopen" data-cycle="' + esc(cycle.id) + '">Επαναφορά σε ανοιχτό</button>');
+  }
+  actions.push('<button type="button" class="btn btn-sm" data-action="toggle-tx" data-cycle="' + esc(cycle.id) + '"'
+    + ' aria-expanded="' + (expanded ? 'true' : 'false') + '">'
+    + (expanded ? 'Απόκρυψη συναλλαγών' : 'Συναλλαγές (' + cycle.transactions.length + ')') + '</button>');
+  actions.push('<button type="button" class="btn btn-sm btn-danger" data-action="delete-cycle" data-cycle="' + esc(cycle.id) + '">Διαγραφή</button>');
+
+  return '<article class="cycle-card' + (isClosed ? ' is-closed' : '') + '" data-cycle-id="' + esc(cycle.id) + '">'
+    + '<div class="cycle-top">'
+    + '<div class="cycle-info">'
+    + '<h3 class="cycle-title">' + esc(cycle.title) + '</h3>'
+    + '<div class="cycle-badges">' + badges.join('') + '</div>'
+    + '<div class="cycle-meta">'
+    + '<span>' + esc(formatDateGR(cycle.startDate)) + ' – ' + esc(formatDateGR(cycle.endDate)) + '</span>'
+    + '<span>Στόχος: <strong>' + esc(formatCents(cycle.targetAmountCents)) + '</strong></span>'
+    + '<span>Καταγραφή: <strong>' + esc(formatCents(getCycleActualAmountCents(cycle))) + '</strong></span>'
+    + '</div>'
+    + (cycle.notes ? '<div class="cycle-notes">' + esc(cycle.notes) + '</div>' : '')
+    + renderCaption(cycle)
+    + settlementBlock
+    + '</div>'
+    + renderRing(cycle)
+    + '</div>'
+    + '<div class="cycle-actions">' + actions.join('') + '</div>'
+    + (expanded ? renderTransactions(cycle) : '')
+    + '</article>';
+}
+
+function renderCycles() {
+  var visible = sortCyclesForDisplay(filterCycles(appState.cycles, ui.filter, ui.query));
+  var host = $('#cycle-list');
+  var counter = $('#cycle-count');
+
+  if (!appState.cycles.length) {
+    counter.textContent = '';
+    host.innerHTML = '<div class="empty">'
+      + '<h3>Δεν υπάρχουν κύκλοι ακόμη</h3>'
+      + '<p>Ένας κύκλος είναι ένας στόχος εσόδων ή ένα όριο εξόδων για μια συγκεκριμένη περίοδο.</p>'
+      + '<button type="button" class="btn btn-primary" data-action="new-cycle">+ Δημιουργία πρώτου κύκλου</button>'
+      + '</div>';
+    return;
+  }
+
+  counter.textContent = 'Εμφανίζονται ' + visible.length + ' από ' + appState.cycles.length + ' κύκλους.';
+
+  if (!visible.length) {
+    host.innerHTML = '<div class="empty">'
+      + '<h3>Κανένα αποτέλεσμα</h3>'
+      + '<p>Κανένας κύκλος δεν ταιριάζει με το φίλτρο ή την αναζήτηση.</p>'
+      + '<button type="button" class="btn" data-action="clear-filters">Καθαρισμός φίλτρων</button>'
+      + '</div>';
+    return;
+  }
+  host.innerHTML = visible.map(renderCycleCard).join('');
+}
+
+function renderLedger() {
+  var host = $('#ledger-container');
+  var entries = appState.balanceLedger.slice().sort(function (a, b) {
+    return String(b.createdAt).localeCompare(String(a.createdAt));
+  });
+
+  var intro = '<dl class="kv" style="margin-bottom:12px"><dt>Αρχικό Balance</dt><dd>'
+    + esc(formatCents(appState.initialBalanceCents)) + '</dd></dl>'
+    + '<dl class="kv" style="margin-bottom:14px"><dt>Τρέχον Balance (αρχικό + όλες οι εγγραφές)</dt><dd>'
+    + esc(formatCents(calculateCurrentBalanceCents(appState))) + '</dd></dl>';
+
+  if (!entries.length) {
+    host.innerHTML = intro + '<p class="faint">Δεν υπάρχει καμία εγγραφή στο ιστορικό. Το Balance αλλάζει μόνο όταν κλείνεις έναν κύκλο, τον επαναφέρεις ή κάνεις χειροκίνητη προσαρμογή.</p>';
+    return;
+  }
+
+  host.innerHTML = intro + '<ul class="ledger-list">' + entries.map(function (e) {
+    var positive = toSafeCents(e.adjustmentCents) >= 0;
+    var badgeClass = e.type === 'settlement' ? 'badge-accent' : e.type === 'reversal' ? 'badge-gold' : 'badge-gray';
+    return '<li class="ledger-item">'
+      + '<div class="ledger-main">'
+      + '<div class="ledger-desc">' + esc(e.description || LEDGER_LABELS[e.type]) + '</div>'
+      + '<div class="faint">' + esc(formatDateGR(e.effectiveDate)) + ' · καταχωρήθηκε ' + esc(formatDateTimeGR(e.createdAt)) + '</div>'
+      + '<div style="margin-top:5px"><span class="badge ' + badgeClass + '">' + esc(LEDGER_LABELS[e.type]) + '</span></div>'
+      + '</div>'
+      + '<div class="ledger-side">'
+      + '<div class="ledger-adj ' + (positive ? 'pos' : 'neg') + '">' + esc(formatSignedCents(e.adjustmentCents)) + '</div>'
+      + '<div class="ledger-bal">Balance: ' + esc(formatCents(e.balanceAfterCents)) + '</div>'
+      + '</div>'
+      + '</li>';
+  }).join('') + '</ul>';
+}
+
+function renderDemoSlot() {
+  var host = $('#demo-slot');
+  if (demoSnapshot) { renderDemoRemoval(); return; }
+  if (hasUserData()) { host.innerHTML = ''; return; }
+  host.innerHTML = '<div class="empty" style="padding:18px">'
+    + '<h3>Θέλεις να δεις πρώτα ένα παράδειγμα;</h3>'
+    + '<p>Φορτώνει τέσσερις δείγματα κύκλων με συναλλαγές. Δεν φορτώνεται ποτέ αυτόματα και αφαιρείται με ένα κλικ.</p>'
+    + '<button type="button" class="btn" data-action="load-demo">Φόρτωση δεδομένων επίδειξης</button>'
+    + '</div>';
+}
+
+function renderThemeButton() {
+  var btn = $('#theme-btn');
+  var dark = appState.settings.theme !== 'light';
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  btn.textContent = dark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα';
+  btn.setAttribute('aria-label', dark ? 'Εναλλαγή σε φωτεινό θέμα' : 'Εναλλαγή σε σκοτεινό θέμα');
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 13 — FILTERS & SEARCH (pure)
+   -------------------------------------------------------------------------- */
+function normalizeForSearch(text) {
+  return String(text == null ? '' : text).toLocaleLowerCase('el');
+}
+
+function cycleMatchesQuery(cycle, query) {
+  if (!query) return true;
+  var q = normalizeForSearch(query);
+  if (normalizeForSearch(cycle.title).indexOf(q) >= 0) return true;
+  if (normalizeForSearch(cycle.category).indexOf(q) >= 0) return true;
+  if (normalizeForSearch(cycle.notes).indexOf(q) >= 0) return true;
+  return cycle.transactions.some(function (t) {
+    return normalizeForSearch(t.description).indexOf(q) >= 0;
+  });
+}
+
+function cycleMatchesFilter(cycle, filter) {
+  switch (filter) {
+    case 'open': return cycle.status === 'open';
+    case 'closed': return cycle.status === 'closed';
+    case 'income': return cycle.type === 'income';
+    case 'expense': return cycle.type === 'expense';
+    case 'weekly': return cycle.periodType === 'weekly';
+    case 'monthly': return cycle.periodType === 'monthly';
+    default: return true;
+  }
+}
+
+function filterCycles(cycles, filter, query) {
+  return cycles.filter(function (c) {
+    return cycleMatchesFilter(c, filter) && cycleMatchesQuery(c, query);
+  });
+}
+
+/* Open cycles first (nearest end date on top), then closed cycles (newest first). */
+function sortCyclesForDisplay(cycles) {
+  return cycles.slice().sort(function (a, b) {
+    if (a.status !== b.status) return a.status === 'open' ? -1 : 1;
+    if (a.status === 'open') {
+      if (a.endDate !== b.endDate) return a.endDate < b.endDate ? -1 : 1;
+      return String(a.createdAt).localeCompare(String(b.createdAt));
+    }
+    return String(b.closedAt || '').localeCompare(String(a.closedAt || ''));
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 14 — MODAL MANAGER (focus trap, Escape, focus restore)
+   -------------------------------------------------------------------------- */
+var modal = { open: false, lastFocus: null, onClose: null };
+
+var FOCUSABLE = 'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+function modalFocusables() {
+  return Array.prototype.slice.call($('#modal').querySelectorAll(FOCUSABLE))
+    .filter(function (el) { return el.offsetParent !== null || el === document.activeElement; });
+}
+
+function openModal(opts) {
+  var root = $('#modal-root');
+  // Keep the original trigger when one modal chains into another.
+  if (!modal.open) modal.lastFocus = document.activeElement;
+  $('#modal-title').textContent = opts.title || '';
+  var sub = $('#modal-subtitle');
+  sub.textContent = opts.subtitle || '';
+  sub.hidden = !opts.subtitle;
+  $('#modal-body').innerHTML = opts.bodyHtml || '';
+  $('#modal-foot').innerHTML = opts.footerHtml || '';
+  root.hidden = false;
+  modal.open = true;
+  modal.onClose = opts.onClose || null;
+  if (typeof opts.onMount === 'function') opts.onMount($('#modal-body'), $('#modal-foot'));
+  window.setTimeout(function () {
+    var preferred = $('#modal-body [data-autofocus]') || $('#modal-foot [data-autofocus]');
+    var list = modalFocusables();
+    var target = preferred || list[0];
+    if (target) target.focus();
+  }, 0);
+}
+
+function closeModal() {
+  if (!modal.open) return;
+  $('#modal-root').hidden = true;
+  $('#modal-body').innerHTML = '';
+  $('#modal-foot').innerHTML = '';
+  modal.open = false;
+  var cb = modal.onClose;
+  var last = modal.lastFocus;
+  modal.onClose = null;
+  modal.lastFocus = null;
+  if (last && document.contains(last) && typeof last.focus === 'function') last.focus();
+  if (typeof cb === 'function') cb();
+}
+
+function trapFocus(event) {
+  if (!modal.open || event.key !== 'Tab') return;
+  var list = modalFocusables();
+  if (!list.length) return;
+  var first = list[0];
+  var last = list[list.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault(); first.focus();
+  }
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 15 — FORM BUILDING BLOCKS
+   -------------------------------------------------------------------------- */
+function fieldShell(id, label, control, hint) {
+  return '<div class="field">'
+    + '<label for="' + esc(id) + '">' + esc(label) + '</label>'
+    + control
+    + (hint ? '<span class="hint" id="' + esc(id) + '-hint">' + esc(hint) + '</span>' : '')
+    + '<span class="err" id="' + esc(id) + '-err" role="alert"></span>'
+    + '</div>';
+}
+
+function textField(o) {
+  var describedBy = o.id + '-err' + (o.hint ? ' ' + o.id + '-hint' : '');
+  var control = '<input type="' + (o.type || 'text') + '" id="' + esc(o.id) + '"'
+    + ' value="' + esc(o.value == null ? '' : o.value) + '"'
+    + (o.placeholder ? ' placeholder="' + esc(o.placeholder) + '"' : '')
+    + (o.inputmode ? ' inputmode="' + esc(o.inputmode) + '"' : '')
+    + (o.autofocus ? ' data-autofocus' : '')
+    + ' autocomplete="off" aria-describedby="' + esc(describedBy) + '">';
+  return fieldShell(o.id, o.label, control, o.hint);
+}
+
+function textareaField(o) {
+  var describedBy = o.id + '-err' + (o.hint ? ' ' + o.id + '-hint' : '');
+  var control = '<textarea id="' + esc(o.id) + '" rows="3" aria-describedby="' + esc(describedBy) + '">'
+    + esc(o.value == null ? '' : o.value) + '</textarea>';
+  return fieldShell(o.id, o.label, control, o.hint);
+}
+
+function selectField(o) {
+  var control = '<select id="' + esc(o.id) + '" aria-describedby="' + esc(o.id) + '-err">'
+    + o.options.map(function (opt) {
+      return '<option value="' + esc(opt.value) + '"' + (opt.value === o.value ? ' selected' : '') + '>'
+        + esc(opt.label) + '</option>';
+    }).join('')
+    + '</select>';
+  return fieldShell(o.id, o.label, control, o.hint);
+}
+
+function switchField(o) {
+  return '<div class="switch-row">'
+    + '<input type="checkbox" id="' + esc(o.id) + '"' + (o.checked ? ' checked' : '') + '>'
+    + '<label for="' + esc(o.id) + '">' + esc(o.label)
+    + (o.hint ? '<span class="hint">' + esc(o.hint) + '</span>' : '')
+    + '</label></div>';
+}
+
+function clearFieldErrors(ids) {
+  ids.forEach(function (id) {
+    var err = document.getElementById(id + '-err');
+    var input = document.getElementById(id);
+    if (err) err.textContent = '';
+    if (input) input.removeAttribute('aria-invalid');
+  });
+}
+
+function showFieldErrors(prefix, errors) {
+  var firstId = null;
+  Object.keys(errors).forEach(function (key) {
+    var id = prefix + key;
+    var err = document.getElementById(id + '-err');
+    var input = document.getElementById(id);
+    if (err) err.textContent = errors[key];
+    if (input) input.setAttribute('aria-invalid', 'true');
+    if (!firstId) firstId = id;
+  });
+  if (firstId) {
+    var el = document.getElementById(firstId);
+    if (el) el.focus();
+  }
+  announce('Ο έλεγχος απέτυχε: ' + Object.keys(errors).map(function (k) { return errors[k]; }).join(' '));
+}
+
+function val(id) {
+  var el = document.getElementById(id);
+  return el ? el.value : '';
+}
+function checked(id) {
+  var el = document.getElementById(id);
+  return !!(el && el.checked);
+}
+
+/* Prevents a double click / double submit from running an action twice. */
+function guardOnce(button, action) {
+  if (!button || button.disabled) return;
+  button.disabled = true;
+  try {
+    action();
+  } catch (e) {
+    button.disabled = false;
+    showToast('Κάτι πήγε στραβά: ' + (e && e.message ? e.message : 'άγνωστο σφάλμα'), 'error');
+  }
+}
+
+function footerButtons(confirmLabel, danger, extra) {
+  return (extra || '')
+    + '<button type="button" class="btn" data-action="close-modal">Άκυρο</button>'
+    + '<button type="button" class="btn ' + (danger ? 'btn-danger' : 'btn-primary') + '" id="modal-confirm">'
+    + esc(confirmLabel) + '</button>';
+}
+
+function openConfirm(opts) {
+  var requireText = opts.requireText || null;
+  var body = '<p style="margin-bottom:12px">' + esc(opts.message) + '</p>'
+    + (opts.detailHtml || '')
+    + (requireText
+      ? '<div class="field"><label for="confirm-text">Γράψε <strong>' + esc(requireText) + '</strong> για επιβεβαίωση</label>'
+        + '<input type="text" id="confirm-text" data-autofocus autocomplete="off" spellcheck="false">'
+        + '<span class="err" id="confirm-text-err" role="alert"></span></div>'
+      : '');
+  openModal({
+    title: opts.title,
+    subtitle: opts.subtitle || '',
+    bodyHtml: body,
+    footerHtml: footerButtons(opts.confirmLabel || 'Επιβεβαίωση', opts.danger !== false),
+    onMount: function () {
+      var confirmBtn = document.getElementById('modal-confirm');
+      if (requireText) {
+        confirmBtn.disabled = true;
+        var input = document.getElementById('confirm-text');
+        input.addEventListener('input', function () {
+          confirmBtn.disabled = input.value !== requireText;
+        });
+      }
+      confirmBtn.addEventListener('click', function () {
+        guardOnce(confirmBtn, function () {
+          closeModal();
+          opts.onConfirm();
+        });
+      });
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 16 — CYCLE FORM
+   -------------------------------------------------------------------------- */
+function openCycleForm(cycleId) {
+  var editing = cycleId ? findCycle(cycleId) : null;
+  if (cycleId && !editing) return;
+  if (editing && editing.status === 'closed') {
+    showToast('Ένας κλειστός κύκλος δεν επεξεργάζεται. Κάνε πρώτα επαναφορά σε ανοιχτό.', 'info');
+    return;
+  }
+  var today = todayISO();
+  var defaults = editing || {
+    title: '', type: 'expense', periodType: 'monthly',
+    startDate: monthRangeFor(today).startDate,
+    endDate: monthRangeFor(today).endDate,
+    targetAmountCents: 0, category: '', notes: '',
+    recurring: false, overTargetIsNegative: true
+  };
+
+  var body =
+    textField({ id: 'fld-title', label: 'Τίτλος κύκλου', value: defaults.title, placeholder: 'π.χ. Μισθός Μαρτίου', autofocus: true })
+    + '<div class="grid-2">'
+    + selectField({
+      id: 'fld-type', label: 'Τύπος', value: defaults.type,
+      options: [{ value: 'expense', label: 'Έξοδο' }, { value: 'income', label: 'Έσοδο' }]
+    })
+    + textField({
+      id: 'fld-targetAmount', label: 'Ποσό-στόχος (€)',
+      value: editing ? (editing.targetAmountCents / 100).toFixed(2).replace('.', ',') : '',
+      placeholder: 'π.χ. 1.200,00', inputmode: 'decimal',
+      hint: 'Δεκτά: 10,50 · 10.50 · 1.000,50 · 1000,50'
+    })
+    + '</div>'
+    + selectField({
+      id: 'fld-periodType', label: 'Τύπος περιόδου', value: defaults.periodType,
+      options: [
+        { value: 'weekly', label: 'Εβδομαδιαίος (Δευτέρα – Κυριακή)' },
+        { value: 'monthly', label: 'Μηνιαίος (1η – τελευταία ημέρα)' },
+        { value: 'custom', label: 'Προσαρμοσμένος' }
+      ],
+      hint: 'Εβδομαδιαίος και μηνιαίος προτείνουν αυτόματα ημερομηνίες.'
+    })
+    + '<div class="grid-2">'
+    + textField({ id: 'fld-startDate', label: 'Έναρξη', type: 'date', value: defaults.startDate })
+    + textField({ id: 'fld-endDate', label: 'Λήξη', type: 'date', value: defaults.endDate })
+    + '</div>'
+    + textField({ id: 'fld-category', label: 'Κατηγορία (προαιρετικό)', value: defaults.category, placeholder: 'π.χ. Τρόφιμα' })
+    + textareaField({ id: 'fld-notes', label: 'Σημειώσεις (προαιρετικό)', value: defaults.notes })
+    + switchField({
+      id: 'fld-recurring', label: 'Επαναλαμβανόμενος κύκλος', checked: defaults.recurring,
+      hint: 'Στο κλείσιμο θα σου προταθεί η δημιουργία της επόμενης περιόδου.'
+    })
+    + switchField({
+      id: 'fld-overTarget', label: 'Η υπέρβαση του στόχου είναι αρνητική', checked: defaults.overTargetIsNegative,
+      hint: 'Έξοδα: ναι (υπέρβαση ορίου). Έσοδα: όχι (πλεόνασμα).'
+    });
+
+  openModal({
+    title: editing ? 'Επεξεργασία κύκλου' : 'Νέος κύκλος',
+    subtitle: editing ? 'Οι συναλλαγές παραμένουν ως έχουν.' : 'Ορισμός στόχου ή ορίου για μια περίοδο.',
+    bodyHtml: body,
+    footerHtml: footerButtons(editing ? 'Αποθήκευση' : 'Δημιουργία κύκλου', false),
+    onMount: function () {
+      var typeSel = document.getElementById('fld-type');
+      var periodSel = document.getElementById('fld-periodType');
+      var startInput = document.getElementById('fld-startDate');
+      var endInput = document.getElementById('fld-endDate');
+      var overCheck = document.getElementById('fld-overTarget');
+      var overTouched = false;
+
+      overCheck.addEventListener('change', function () { overTouched = true; });
+
+      typeSel.addEventListener('change', function () {
+        if (!overTouched) overCheck.checked = defaultOverTargetIsNegative(typeSel.value);
+      });
+
+      function suggestDates() {
+        var anchor = isValidISODate(startInput.value) ? startInput.value : todayISO();
+        if (periodSel.value === 'weekly') {
+          var w = weekRangeFor(anchor);
+          startInput.value = w.startDate; endInput.value = w.endDate;
+        } else if (periodSel.value === 'monthly') {
+          var m = monthRangeFor(anchor);
+          startInput.value = m.startDate; endInput.value = m.endDate;
+        }
+      }
+      periodSel.addEventListener('change', suggestDates);
+      startInput.addEventListener('change', suggestDates);
+
+      document.getElementById('modal-confirm').addEventListener('click', function (ev) {
+        var btn = ev.currentTarget;
+        var ids = ['fld-title', 'fld-type', 'fld-targetAmount', 'fld-periodType', 'fld-startDate', 'fld-endDate', 'fld-category', 'fld-notes'];
+        clearFieldErrors(ids);
+        var input = {
+          title: val('fld-title'), type: val('fld-type'), periodType: val('fld-periodType'),
+          targetAmount: val('fld-targetAmount'), startDate: val('fld-startDate'), endDate: val('fld-endDate'),
+          category: val('fld-category'), notes: val('fld-notes')
+        };
+        var result = validateCycleInput(input);
+        if (!result.ok) { showFieldErrors('fld-', result.errors); return; }
+
+        guardOnce(btn, function () {
+          var payload = {
+            title: input.title, type: input.type, periodType: input.periodType,
+            startDate: input.startDate, endDate: input.endDate,
+            targetAmountCents: result.value.targetAmountCents,
+            category: input.category, notes: input.notes,
+            recurring: checked('fld-recurring'),
+            overTargetIsNegative: checked('fld-overTarget')
+          };
+          if (editing) {
+            var updated = Object.assign({}, editing, payload, { updatedAt: nowISO() });
+            closeModal();
+            commit(replaceCycle(appState, updated), 'Ο κύκλος ενημερώθηκε.');
+          } else {
+            var created = createCycle(payload);
+            ui.expanded[created.id] = true;
+            closeModal();
+            commit(Object.assign({}, appState, { cycles: appState.cycles.concat([created]) }),
+              'Ο κύκλος «' + created.title + '» δημιουργήθηκε.');
+          }
+        });
+      });
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 17 — TRANSACTION FORM
+   -------------------------------------------------------------------------- */
+function openTransactionForm(cycleId, txId) {
+  var cycle = findCycle(cycleId);
+  if (!cycle) return;
+  if (cycle.status === 'closed') {
+    showToast('Οι συναλλαγές ενός κλειστού κύκλου είναι κλειδωμένες.', 'info');
+    return;
+  }
+  var editing = null;
+  if (txId) {
+    editing = cycle.transactions.filter(function (t) { return t.id === txId; })[0] || null;
+    if (!editing) return;
+  }
+  var defaultDate = editing ? editing.date
+    : (todayISO() >= cycle.startDate && todayISO() <= cycle.endDate ? todayISO() : cycle.startDate);
+
+  var body =
+    textField({
+      id: 'tx-amount', label: 'Ποσό (€)', autofocus: true, inputmode: 'decimal',
+      value: editing ? (editing.amountCents / 100).toFixed(2).replace('.', ',') : '',
+      placeholder: 'π.χ. 45,50',
+      hint: 'Πάντα θετικό ποσό. Ο τύπος του κύκλου (' + TYPE_LABELS[cycle.type] + ') καθορίζει τη σημασία του.'
+    })
+    + textField({ id: 'tx-date', label: 'Ημερομηνία', type: 'date', value: defaultDate })
+    + textField({
+      id: 'tx-description', label: 'Περιγραφή', value: editing ? editing.description : '',
+      placeholder: 'π.χ. Σούπερ μάρκετ'
+    })
+    + textareaField({ id: 'tx-notes', label: 'Σημειώσεις (προαιρετικό)', value: editing ? editing.notes : '' });
+
+  openModal({
+    title: editing ? 'Επεξεργασία συναλλαγής' : 'Νέα συναλλαγή',
+    subtitle: cycle.title,
+    bodyHtml: body,
+    footerHtml: footerButtons(editing ? 'Αποθήκευση' : 'Προσθήκη', false),
+    onMount: function () {
+      document.getElementById('modal-confirm').addEventListener('click', function (ev) {
+        var btn = ev.currentTarget;
+        var ids = ['tx-amount', 'tx-date', 'tx-description', 'tx-notes'];
+        clearFieldErrors(ids);
+        var input = {
+          amount: val('tx-amount'), date: val('tx-date'),
+          description: val('tx-description'), notes: val('tx-notes')
+        };
+        var result = validateTransactionInput(input);
+        if (!result.ok) { showFieldErrors('tx-', result.errors); return; }
+
+        guardOnce(btn, function () {
+          var current = findCycle(cycleId);
+          if (!current || current.status === 'closed') {
+            closeModal();
+            showToast('Ο κύκλος δεν είναι πλέον ανοιχτός.', 'error');
+            return;
+          }
+          var nextCycle;
+          if (editing) {
+            nextCycle = updateTransactionInCycle(current, editing.id, {
+              amountCents: result.value.amountCents, date: input.date,
+              description: input.description.trim(), notes: input.notes
+            });
+          } else {
+            nextCycle = addTransactionToCycle(current, {
+              amountCents: result.value.amountCents, date: input.date,
+              description: input.description.trim(), notes: input.notes
+            });
+          }
+          ui.expanded[cycleId] = true;
+          closeModal();
+          var total = getCycleActualAmountCents(nextCycle);
+          commit(replaceCycle(appState, nextCycle),
+            (editing ? 'Η συναλλαγή ενημερώθηκε.' : 'Η συναλλαγή καταχωρήθηκε.')
+            + ' Νέο σύνολο κύκλου: ' + formatCents(total));
+        });
+      });
+    }
+  });
+}
+
+function confirmDeleteTransaction(cycleId, txId) {
+  var cycle = findCycle(cycleId);
+  if (!cycle || cycle.status === 'closed') return;
+  var tx = cycle.transactions.filter(function (t) { return t.id === txId; })[0];
+  if (!tx) return;
+  openConfirm({
+    title: 'Διαγραφή συναλλαγής',
+    message: 'Θα διαγραφεί οριστικά η συναλλαγή «' + (tx.description || 'χωρίς περιγραφή') + '» ποσού '
+      + formatCents(tx.amountCents) + ' (' + formatDateGR(tx.date) + '). Το Balance δεν επηρεάζεται.',
+    confirmLabel: 'Διαγραφή',
+    onConfirm: function () {
+      var current = findCycle(cycleId);
+      if (!current || current.status === 'closed') return;
+      var nextCycle = removeTransactionFromCycle(current, txId);
+      commit(replaceCycle(appState, nextCycle),
+        'Η συναλλαγή διαγράφηκε. Νέο σύνολο κύκλου: ' + formatCents(getCycleActualAmountCents(nextCycle)));
+    }
+  });
+}
+
+function confirmDeleteCycle(cycleId) {
+  var cycle = findCycle(cycleId);
+  if (!cycle) return;
+  var wasClosed = cycle.status === 'closed';
+  openConfirm({
+    title: 'Διαγραφή κύκλου',
+    message: 'Θα διαγραφεί ο κύκλος «' + cycle.title + '» μαζί με τις ' + cycle.transactions.length + ' συναλλαγές του.',
+    detailHtml: wasClosed
+      ? '<p class="faint">Ο κύκλος είναι κλειστός: οι εγγραφές του στο ιστορικό Balance παραμένουν ως έχουν, άρα το Balance δεν αλλάζει.</p>'
+      : '<p class="faint">Ο κύκλος είναι ανοιχτός, άρα δεν έχει επηρεάσει ποτέ το Balance. Το Balance δεν αλλάζει.</p>',
+    confirmLabel: 'Διαγραφή κύκλου',
+    onConfirm: function () {
+      delete ui.expanded[cycleId];
+      commit(Object.assign({}, appState, {
+        cycles: appState.cycles.filter(function (c) { return c.id !== cycleId; })
+      }), 'Ο κύκλος διαγράφηκε.');
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 18 — SETTLEMENT, REOPENING, RECURRENCE
+   -------------------------------------------------------------------------- */
+function openSettlementModal(cycleId) {
+  var cycle = findCycle(cycleId);
+  if (!cycle) return;
+  if (cycle.status !== 'open') {
+    showToast('Ο κύκλος έχει ήδη κλείσει.', 'info');
+    return;
+  }
+  // One settlementId per modal: repeated clicks or a double submit reuse it,
+  // and applySettlement refuses an id that already exists in the ledger.
+  var settlementId = newId('stl');
+  var actual = getCycleActualAmountCents(cycle);
+  var target = toSafeCents(cycle.targetAmountCents);
+  var adjustment = calculateSettlementAdjustmentCents(cycle);
+  var before = calculateCurrentBalanceCents(appState);
+  var after = addCents(before, adjustment);
+  var effectLabel = adjustment >= 0 ? 'Πλεόνασμα' : 'Έλλειμμα';
+
+  var body = '<div class="settle-summary" style="margin-top:0">'
+    + '<dl class="kv"><dt>Τύπος κύκλου</dt><dd>' + esc(TYPE_LABELS[cycle.type]) + '</dd></dl>'
+    + '<dl class="kv"><dt>' + (cycle.type === 'expense' ? 'Όριο' : 'Στόχος') + '</dt><dd>' + esc(formatCents(target)) + '</dd></dl>'
+    + '<dl class="kv"><dt>Πραγματικό ποσό</dt><dd>' + esc(formatCents(actual)) + '</dd></dl>'
+    + '<dl class="kv"><dt>Διαφορά (πραγματικό − στόχος)</dt><dd>' + esc(formatSignedCents(actual - target)) + '</dd></dl>'
+    + '</div>'
+    + '<div class="settle-summary">'
+    + '<dl class="kv"><dt>Επίδραση στο Balance</dt><dd class="' + (adjustment < 0 ? 'neg' : 'pos') + '">'
+    + esc(formatSignedCents(adjustment)) + ' — ' + esc(effectLabel) + '</dd></dl>'
+    + '<dl class="kv"><dt>Balance πριν</dt><dd>' + esc(formatCents(before)) + '</dd></dl>'
+    + '<dl class="kv"><dt>Balance μετά</dt><dd>' + esc(formatCents(after)) + '</dd></dl>'
+    + '</div>'
+    + '<p class="faint" style="margin-top:12px">'
+    + (cycle.type === 'income'
+      ? 'Έσοδο: η επίδραση είναι πραγματικό − στόχος.'
+      : 'Έξοδο: η επίδραση είναι στόχος − πραγματικό.')
+    + ' Μετά το κλείσιμο οι συναλλαγές κλειδώνουν και ο κύκλος μεταφέρεται στο ιστορικό. Μπορείς πάντα να κάνεις επαναφορά.</p>';
+
+  openModal({
+    title: 'Κλείσιμο κύκλου',
+    subtitle: cycle.title,
+    bodyHtml: body,
+    footerHtml: footerButtons('Κλείσιμο και ενημέρωση Balance', false),
+    onMount: function () {
+      document.getElementById('modal-confirm').addEventListener('click', function (ev) {
+        guardOnce(ev.currentTarget, function () {
+          var result = applySettlement(appState, cycleId, settlementId);
+          if (!result.applied) {
+            closeModal();
+            render();
+            showToast('Ο κύκλος έχει ήδη κλείσει — δεν καταχωρήθηκε δεύτερη εγγραφή.', 'info');
+            return;
+          }
+          var closedCycle = result.cycle;
+          closeModal();
+          commit(result.state,
+            'Ο κύκλος έκλεισε. Επίδραση στο Balance: ' + formatSignedCents(result.adjustmentCents),
+            result.adjustmentCents < 0 ? 'info' : 'success');
+          if (closedCycle.recurring) offerNextPeriod(closedCycle);
+        });
+      });
+    }
+  });
+}
+
+function offerNextPeriod(cycle) {
+  var next;
+  try {
+    next = nextPeriodDates(cycle.periodType, cycle.startDate, cycle.endDate);
+  } catch (e) {
+    return;
+  }
+  var body = '<p style="margin-bottom:12px">Ο κύκλος είναι επαναλαμβανόμενος. Θέλεις να δημιουργηθεί η επόμενη περίοδος με τις ίδιες ρυθμίσεις;</p>'
+    + '<div class="settle-summary" style="margin-top:0">'
+    + '<dl class="kv"><dt>Τίτλος</dt><dd>' + esc(cycle.title) + '</dd></dl>'
+    + '<dl class="kv"><dt>Νέα περίοδος</dt><dd>' + esc(formatDateGR(next.startDate)) + ' – ' + esc(formatDateGR(next.endDate)) + '</dd></dl>'
+    + '<dl class="kv"><dt>' + (cycle.type === 'expense' ? 'Όριο' : 'Στόχος') + '</dt><dd>' + esc(formatCents(cycle.targetAmountCents)) + '</dd></dl>'
+    + '</div>'
+    + '<p class="faint" style="margin-top:12px">Αντιγράφονται τίτλος, τύπος, ποσό-στόχος, κατηγορία, σημειώσεις και ρυθμίσεις. Οι συναλλαγές <strong>δεν</strong> αντιγράφονται.</p>';
+
+  openModal({
+    title: 'Δημιουργία επόμενης περιόδου',
+    subtitle: PERIOD_LABELS[cycle.periodType] + ' κύκλος',
+    bodyHtml: body,
+    footerHtml: '<button type="button" class="btn" data-action="close-modal">Όχι τώρα</button>'
+      + '<button type="button" class="btn btn-primary" id="modal-confirm" data-autofocus>Δημιουργία</button>',
+    onMount: function () {
+      document.getElementById('modal-confirm').addEventListener('click', function (ev) {
+        guardOnce(ev.currentTarget, function () {
+          var created = createCycle({
+            title: cycle.title, type: cycle.type, periodType: cycle.periodType,
+            startDate: next.startDate, endDate: next.endDate,
+            targetAmountCents: cycle.targetAmountCents,
+            category: cycle.category, notes: cycle.notes,
+            recurring: cycle.recurring, overTargetIsNegative: cycle.overTargetIsNegative
+            // transactions are deliberately not copied
+          });
+          closeModal();
+          commit(Object.assign({}, appState, { cycles: appState.cycles.concat([created]) }),
+            'Δημιουργήθηκε η επόμενη περίοδος: ' + formatDateGR(next.startDate) + ' – ' + formatDateGR(next.endDate));
+        });
+      });
+    }
+  });
+}
+
+function confirmReopen(cycleId) {
+  var cycle = findCycle(cycleId);
+  if (!cycle || cycle.status !== 'closed') return;
+  var adjustment = toSafeCents(cycle.settlementAdjustmentCents);
+  var reversal = -adjustment;
+  var before = calculateCurrentBalanceCents(appState);
+
+  openConfirm({
+    title: 'Επαναφορά σε ανοιχτό',
+    subtitle: cycle.title,
+    message: 'Η επαναφορά ακυρώνει την επίδραση του κλεισίματος στο Balance και ξεκλειδώνει τις συναλλαγές. Καμία εγγραφή δεν διαγράφεται ποτέ.',
+    detailHtml: '<div class="settle-summary" style="margin-top:0">'
+      + '<dl class="kv"><dt>Αρχική επίδραση κλεισίματος</dt><dd>' + esc(formatSignedCents(adjustment)) + '</dd></dl>'
+      + '<dl class="kv"><dt>Εγγραφή αντιλογισμού</dt><dd>' + esc(formatSignedCents(reversal)) + '</dd></dl>'
+      + '<dl class="kv"><dt>Balance μετά την επαναφορά</dt><dd>' + esc(formatCents(before + reversal)) + '</dd></dl>'
+      + '</div><p class="faint" style="margin-top:10px">Και οι δύο εγγραφές (κλείσιμο και επαναφορά) παραμένουν στο ιστορικό. Το επόμενο κλείσιμο θα υπολογίσει νέα επίδραση από τα νέα δεδομένα.</p>',
+    confirmLabel: 'Επαναφορά κύκλου',
+    onConfirm: function () {
+      var result = reverseSettlement(appState, cycleId);
+      if (!result.applied) {
+        showToast('Η επαναφορά δεν ήταν δυνατή (ο κύκλος δεν είναι κλειστός).', 'error');
+        return;
+      }
+      ui.expanded[cycleId] = true;
+      commit(result.state,
+        'Ο κύκλος άνοιξε ξανά. Επίδραση στο Balance: ' + formatSignedCents(result.adjustmentCents), 'info');
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 19 — BALANCE: INITIAL VALUE AND MANUAL ADJUSTMENTS
+   -------------------------------------------------------------------------- */
+function openInitialBalanceModal() {
+  var body = textField({
+    id: 'ib-amount', label: 'Αρχικό Balance (€)', autofocus: true, inputmode: 'decimal',
+    value: (appState.initialBalanceCents / 100).toFixed(2).replace('.', ','),
+    hint: 'Μπορεί να είναι και αρνητικό, π.χ. -250,00.'
+  })
+    + '<p class="faint">Το αρχικό Balance είναι το σημείο εκκίνησης. Όλες οι εγγραφές του ιστορικού προστίθενται πάνω σε αυτό.</p>';
+
+  openModal({
+    title: 'Ορισμός αρχικού Balance',
+    bodyHtml: body,
+    footerHtml: footerButtons('Αποθήκευση', false),
+    onMount: function () {
+      document.getElementById('modal-confirm').addEventListener('click', function (ev) {
+        var btn = ev.currentTarget;
+        clearFieldErrors(['ib-amount']);
+        var parsed = parseAmountResult(val('ib-amount'));
+        if (!parsed.ok) { showFieldErrors('ib-', { amount: parsed.error }); return; }
+        guardOnce(btn, function () {
+          var next = Object.assign({}, appState, { initialBalanceCents: parsed.cents });
+          closeModal();
+          commit(next, 'Το αρχικό Balance ορίστηκε σε ' + formatCents(parsed.cents) + '.');
+        });
+      });
+    }
+  });
+}
+
+function openManualAdjustmentModal() {
+  var body =
+    textField({
+      id: 'ma-amount', label: 'Ποσό προσαρμογής (€)', autofocus: true, inputmode: 'decimal',
+      placeholder: 'π.χ. 50,00 ή -50,00',
+      hint: 'Θετικό ποσό αυξάνει το Balance, αρνητικό το μειώνει.'
+    })
+    + textField({ id: 'ma-description', label: 'Περιγραφή', placeholder: 'π.χ. Δώρο, διόρθωση, τόκοι' })
+    + textField({ id: 'ma-date', label: 'Ημερομηνία', type: 'date', value: todayISO() })
+    + '<p class="faint" id="ma-preview">Τρέχον Balance: ' + esc(formatCents(calculateCurrentBalanceCents(appState))) + '</p>';
+
+  openModal({
+    title: 'Χειροκίνητη προσαρμογή Balance',
+    subtitle: 'Καταχωρείται ως μόνιμη εγγραφή στο ιστορικό.',
+    bodyHtml: body,
+    footerHtml: footerButtons('Συνέχεια', false),
+    onMount: function () {
+      var amountInput = document.getElementById('ma-amount');
+      var preview = document.getElementById('ma-preview');
+      var current = calculateCurrentBalanceCents(appState);
+      amountInput.addEventListener('input', function () {
+        var parsed = parseAmountResult(amountInput.value);
+        preview.textContent = parsed.ok
+          ? 'Τρέχον Balance: ' + formatCents(current) + ' → Νέο Balance: ' + formatCents(current + parsed.cents)
+          : 'Τρέχον Balance: ' + formatCents(current);
+      });
+
+      document.getElementById('modal-confirm').addEventListener('click', function () {
+        clearFieldErrors(['ma-amount', 'ma-description', 'ma-date']);
+        var input = { amount: val('ma-amount'), description: val('ma-description'), date: val('ma-date') };
+        var result = validateManualAdjustmentInput(input);
+        if (!result.ok) { showFieldErrors('ma-', result.errors); return; }
+        var cents = result.value.adjustmentCents;
+        openConfirm({
+          title: 'Επιβεβαίωση προσαρμογής',
+          message: 'Θα καταχωρηθεί προσαρμογή ' + formatSignedCents(cents) + ' με ημερομηνία ' + formatDateGR(input.date) + '.',
+          detailHtml: '<div class="settle-summary" style="margin-top:0">'
+            + '<dl class="kv"><dt>Περιγραφή</dt><dd>' + esc(input.description.trim()) + '</dd></dl>'
+            + '<dl class="kv"><dt>Balance πριν</dt><dd>' + esc(formatCents(current)) + '</dd></dl>'
+            + '<dl class="kv"><dt>Balance μετά</dt><dd>' + esc(formatCents(current + cents)) + '</dd></dl>'
+            + '</div>',
+          confirmLabel: 'Καταχώρηση',
+          danger: false,
+          onConfirm: function () {
+            var res = addManualAdjustment(appState, {
+              adjustmentCents: cents,
+              description: input.description.trim(),
+              effectiveDate: input.date
+            });
+            commit(res.state, 'Η προσαρμογή καταχωρήθηκε: ' + formatSignedCents(cents));
+          }
+        });
+      });
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 20 — IMPORT / EXPORT
+   -------------------------------------------------------------------------- */
+function downloadFile(filename, content, mime) {
+  try {
+    var blob = new Blob([content], { type: mime + ';charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    return true;
+  } catch (e) {
+    showToast('Η λήψη του αρχείου απέτυχε σε αυτόν τον browser.', 'error');
+    return false;
+  }
+}
+
+function exportBackup() {
+  var payload = {
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    exportedAt: nowISO(),
+    applicationName: APP_NAME,
+    applicationState: appState
+  };
+  if (downloadFile('financial-cycles-backup-' + todayISO() + '.json', JSON.stringify(payload, null, 2), 'application/json')) {
+    showToast('Το backup δημιουργήθηκε.');
+  }
+}
+
+function csvEscape(value) {
+  var text = String(value == null ? '' : value);
+  if (/[";,\r\n]/.test(text)) return '"' + text.replace(/"/g, '""') + '"';
+  return text;
+}
+
+/* UTF-8 with BOM so Excel opens Greek text correctly; semicolon delimiter. */
+function buildCsv(headers, rows) {
+  var all = [headers].concat(rows);
+  return '\uFEFF' + all.map(function (row) {
+    return row.map(csvEscape).join(';');
+  }).join('\r\n') + '\r\n';
+}
+
+function centsForCsv(cents) {
+  return (toSafeCents(cents) / 100).toFixed(2).replace('.', ',');
+}
+
+function exportTransactionsCsv() {
+  var rows = [];
+  appState.cycles.forEach(function (cycle) {
+    cycle.transactions.forEach(function (t) {
+      rows.push([
+        cycle.title, TYPE_LABELS[cycle.type], cycle.category, cycle.status === 'closed' ? 'Κλειστός' : 'Ανοιχτός',
+        t.date, t.description, centsForCsv(t.amountCents), t.notes, t.id, cycle.id
+      ]);
+    });
+  });
+  if (!rows.length) { showToast('Δεν υπάρχουν συναλλαγές για εξαγωγή.', 'info'); return; }
+  var csv = buildCsv(
+    ['Κύκλος', 'Τύπος κύκλου', 'Κατηγορία', 'Κατάσταση κύκλου', 'Ημερομηνία', 'Περιγραφή', 'Ποσό (EUR)', 'Σημειώσεις', 'ID συναλλαγής', 'ID κύκλου'],
+    rows
+  );
+  if (downloadFile('financial-cycles-transactions-' + todayISO() + '.csv', csv, 'text/csv')) {
+    showToast('Εξήχθησαν ' + rows.length + ' συναλλαγές.');
+  }
+}
+
+function exportLedgerCsv() {
+  if (!appState.balanceLedger.length) { showToast('Το ιστορικό Balance είναι κενό.', 'info'); return; }
+  var rows = appState.balanceLedger.map(function (e) {
+    return [
+      e.effectiveDate, formatDateTimeGR(e.createdAt), LEDGER_LABELS[e.type], e.description,
+      centsForCsv(e.adjustmentCents), centsForCsv(e.balanceBeforeCents), centsForCsv(e.balanceAfterCents),
+      e.cycleId || '', e.settlementId || '', e.id
+    ];
+  });
+  var csv = buildCsv(
+    ['Ημερομηνία ισχύος', 'Καταχωρήθηκε', 'Τύπος', 'Περιγραφή', 'Προσαρμογή (EUR)', 'Balance πριν (EUR)', 'Balance μετά (EUR)', 'ID κύκλου', 'ID διακανονισμού', 'ID εγγραφής'],
+    rows
+  );
+  if (downloadFile('financial-cycles-ledger-' + todayISO() + '.csv', csv, 'text/csv')) {
+    showToast('Εξήχθησαν ' + rows.length + ' εγγραφές ιστορικού.');
+  }
+}
+
+function handleImportFile(file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onerror = function () { showToast('Το αρχείο δεν μπόρεσε να διαβαστεί.', 'error'); };
+  reader.onload = function () {
+    var parsed;
+    try {
+      parsed = JSON.parse(String(reader.result));
+    } catch (e) {
+      showToast('Το αρχείο δεν είναι έγκυρο JSON.', 'error');
+      return;
+    }
+    var incoming = parsed && parsed.applicationState ? parsed.applicationState : parsed;
+    if (!incoming || typeof incoming !== 'object' || !Array.isArray(incoming.cycles)) {
+      showToast('Το αρχείο δεν περιέχει δεδομένα Financial Cycles.', 'error');
+      return;
+    }
+    openImportPreview(parsed, incoming);
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function openImportPreview(payload, incoming) {
+  var normalized;
+  try {
+    normalized = migrate(incoming);
+  } catch (e) {
+    showToast('Τα δεδομένα του αρχείου δεν μπόρεσαν να διαβαστούν.', 'error');
+    return;
+  }
+  var txCount = normalized.cycles.reduce(function (n, c) { return n + c.transactions.length; }, 0);
+  var preview = mergeImport(appState, normalized);
+
+  var body = '<div class="settle-summary" style="margin-top:0">'
+    + '<dl class="kv"><dt>Εφαρμογή</dt><dd>' + esc(payload && payload.applicationName ? payload.applicationName : '—') + '</dd></dl>'
+    + '<dl class="kv"><dt>Έκδοση σχήματος</dt><dd>' + esc(String(payload && payload.schemaVersion != null ? payload.schemaVersion : normalized.schemaVersion)) + '</dd></dl>'
+    + '<dl class="kv"><dt>Ημερομηνία εξαγωγής</dt><dd>' + esc(payload && payload.exportedAt ? formatDateTimeGR(payload.exportedAt) : '—') + '</dd></dl>'
+    + '<dl class="kv"><dt>Κύκλοι στο αρχείο</dt><dd>' + normalized.cycles.length + '</dd></dl>'
+    + '<dl class="kv"><dt>Συναλλαγές στο αρχείο</dt><dd>' + txCount + '</dd></dl>'
+    + '<dl class="kv"><dt>Εγγραφές ιστορικού στο αρχείο</dt><dd>' + normalized.balanceLedger.length + '</dd></dl>'
+    + '<dl class="kv"><dt>Αρχικό Balance στο αρχείο</dt><dd>' + esc(formatCents(normalized.initialBalanceCents)) + '</dd></dl>'
+    + '</div>'
+    + '<h3 style="margin:16px 0 8px;font-size:.95rem">Αν επιλέξεις συγχώνευση</h3>'
+    + '<div class="settle-summary" style="margin-top:0">'
+    + '<dl class="kv"><dt>Νέοι κύκλοι</dt><dd>' + preview.summary.importedCycles + '</dd></dl>'
+    + '<dl class="kv"><dt>Κύκλοι που υπάρχουν ήδη (παραλείπονται)</dt><dd>' + preview.summary.skippedCycles + '</dd></dl>'
+    + '<dl class="kv"><dt>Νέες συναλλαγές</dt><dd>' + preview.summary.importedTransactions + '</dd></dl>'
+    + '<dl class="kv"><dt>Συναλλαγές που παραλείπονται</dt><dd>' + preview.summary.skippedTransactions + '</dd></dl>'
+    + '<dl class="kv"><dt>Νέες εγγραφές ιστορικού</dt><dd>' + preview.summary.importedLedgerEntries + '</dd></dl>'
+    + '<dl class="kv"><dt>Εγγραφές που παραλείπονται</dt><dd>' + preview.summary.skippedLedgerEntries + '</dd></dl>'
+    + '<dl class="kv"><dt>Συγκρούσεις (ίδιο ID, διαφορετικά δεδομένα)</dt><dd>' + preview.summary.conflicts + '</dd></dl>'
+    + '</div>'
+    + '<p class="faint" style="margin-top:12px">Η συγχώνευση κρατά τα υπάρχοντα δεδομένα σου και προσθέτει μόνο ό,τι έχει άγνωστο ID. Το αρχικό Balance παραμένει το δικό σου.</p>';
+
+  openModal({
+    title: 'Προεπισκόπηση εισαγωγής',
+    subtitle: 'Διάλεξε τρόπο εισαγωγής.',
+    bodyHtml: body,
+    footerHtml: '<button type="button" class="btn" data-action="close-modal">Άκυρο</button>'
+      + '<button type="button" class="btn" id="import-merge">Συγχώνευση</button>'
+      + '<button type="button" class="btn btn-danger" id="import-replace">Αντικατάσταση όλων</button>',
+    onMount: function () {
+      document.getElementById('import-merge').addEventListener('click', function (ev) {
+        guardOnce(ev.currentTarget, function () {
+          var result = mergeImport(appState, normalized);
+          closeModal();
+          commit(result.state, 'Η συγχώνευση ολοκληρώθηκε.');
+          showImportSummary(result.summary);
+        });
+      });
+      document.getElementById('import-replace').addEventListener('click', function () {
+        closeModal();
+        openConfirm({
+          title: 'Αντικατάσταση όλων των δεδομένων',
+          message: 'Όλοι οι τρέχοντες κύκλοι, οι συναλλαγές και το ιστορικό Balance θα αντικατασταθούν από το περιεχόμενο του αρχείου.',
+          confirmLabel: 'Αντικατάσταση',
+          onConfirm: function () {
+            ui.expanded = Object.create(null);
+            commit(normalized, 'Τα δεδομένα αντικαταστάθηκαν από το backup.');
+          }
+        });
+      });
+    }
+  });
+}
+
+function showImportSummary(summary) {
+  openModal({
+    title: 'Σύνοψη εισαγωγής',
+    bodyHtml: '<div class="settle-summary" style="margin-top:0">'
+      + '<dl class="kv"><dt>Κύκλοι που εισήχθησαν</dt><dd>' + summary.importedCycles + '</dd></dl>'
+      + '<dl class="kv"><dt>Κύκλοι που παραλείφθηκαν</dt><dd>' + summary.skippedCycles + '</dd></dl>'
+      + '<dl class="kv"><dt>Συναλλαγές που εισήχθησαν</dt><dd>' + summary.importedTransactions + '</dd></dl>'
+      + '<dl class="kv"><dt>Συναλλαγές που παραλείφθηκαν</dt><dd>' + summary.skippedTransactions + '</dd></dl>'
+      + '<dl class="kv"><dt>Εγγραφές ιστορικού που εισήχθησαν</dt><dd>' + summary.importedLedgerEntries + '</dd></dl>'
+      + '<dl class="kv"><dt>Εγγραφές ιστορικού που παραλείφθηκαν</dt><dd>' + summary.skippedLedgerEntries + '</dd></dl>'
+      + '<dl class="kv"><dt>Συγκρούσεις</dt><dd>' + summary.conflicts + '</dd></dl>'
+      + '</div>',
+    footerHtml: '<button type="button" class="btn btn-primary" data-action="close-modal" data-autofocus>Εντάξει</button>'
+  });
+}
+
+function confirmWipe() {
+  openConfirm({
+    title: 'Διαγραφή όλων των δεδομένων',
+    message: 'Θα διαγραφούν οριστικά όλοι οι κύκλοι, όλες οι συναλλαγές και ολόκληρο το ιστορικό Balance από αυτόν τον browser. Η ενέργεια δεν αναιρείται.',
+    detailHtml: '<p class="faint">Πρότασή μας: κάνε πρώτα εξαγωγή backup.</p>',
+    requireText: 'ΔΙΑΓΡΑΦΗ',
+    confirmLabel: 'Οριστική διαγραφή',
+    onConfirm: function () {
+      try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+      storageError = null;
+      demoSnapshot = null;
+      ui.expanded = Object.create(null);
+      ui.filter = 'all';
+      ui.query = '';
+      var searchInput = $('#search-input');
+      if (searchInput) searchInput.value = '';
+      commit(createDefaultState(), 'Όλα τα δεδομένα διαγράφηκαν.', 'info');
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 21 — DEMO DATA (loaded only on demand, removable in one click)
+   -------------------------------------------------------------------------- */
+var demoSnapshot = null;
+
+function loadDemoData() {
+  if (hasUserData()) {
+    showToast('Τα δεδομένα επίδειξης φορτώνονται μόνο όταν δεν υπάρχουν δικά σου δεδομένα.', 'info');
+    return;
+  }
+  demoSnapshot = appState;
+  var demo = buildDemoState();
+  commit(demo, 'Φορτώθηκαν δεδομένα επίδειξης. Μπορείς να τα αφαιρέσεις με ένα κλικ.', 'info');
+  renderDemoRemoval();
+}
+
+function renderDemoRemoval() {
+  if (!demoSnapshot) return;
+  var host = $('#demo-slot');
+  host.innerHTML = '<div class="empty" style="padding:16px">'
+    + '<h3>Δεδομένα επίδειξης ενεργά</h3>'
+    + '<p>Αφαίρεσέ τα όποτε θέλεις για να ξεκινήσεις με καθαρά δεδομένα.</p>'
+    + '<button type="button" class="btn btn-danger" data-action="remove-demo">Αφαίρεση δεδομένων επίδειξης</button>'
+    + '</div>';
+}
+
+function removeDemoData() {
+  if (!demoSnapshot) return;
+  var snapshot = demoSnapshot;
+  demoSnapshot = null;
+  ui.expanded = Object.create(null);
+  commit(snapshot, 'Τα δεδομένα επίδειξης αφαιρέθηκαν.', 'info');
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 22 — EVENT LISTENERS (delegated)
+   -------------------------------------------------------------------------- */
+var ACTIONS = {
+  'new-cycle': function () { openCycleForm(null); },
+  'edit-cycle': function (el) { openCycleForm(el.getAttribute('data-cycle')); },
+  'delete-cycle': function (el) { confirmDeleteCycle(el.getAttribute('data-cycle')); },
+  'add-tx': function (el) { openTransactionForm(el.getAttribute('data-cycle'), null); },
+  'edit-tx': function (el) { openTransactionForm(el.getAttribute('data-cycle'), el.getAttribute('data-tx')); },
+  'delete-tx': function (el) { confirmDeleteTransaction(el.getAttribute('data-cycle'), el.getAttribute('data-tx')); },
+  'settle': function (el) { openSettlementModal(el.getAttribute('data-cycle')); },
+  'reopen': function (el) { confirmReopen(el.getAttribute('data-cycle')); },
+  'toggle-tx': function (el) {
+    var id = el.getAttribute('data-cycle');
+    ui.expanded[id] = !ui.expanded[id];
+    renderCycles();
+    var again = document.querySelector('[data-action="toggle-tx"][data-cycle="' + id + '"]');
+    if (again) again.focus();
+  },
+  'filter': function (el) {
+    ui.filter = el.getAttribute('data-filter');
+    renderFilters();
+    renderCycles();
+    var again = document.querySelector('[data-action="filter"][data-filter="' + ui.filter + '"]');
+    if (again) again.focus();
+  },
+  'clear-filters': function () {
+    ui.filter = 'all';
+    ui.query = '';
+    var input = $('#search-input');
+    if (input) input.value = '';
+    renderFilters();
+    renderCycles();
+  },
+  'toggle-theme': function () {
+    var next = appState.settings.theme === 'light' ? 'dark' : 'light';
+    commit(Object.assign({}, appState, {
+      settings: Object.assign({}, appState.settings, { theme: next })
+    }));
+    announce(next === 'light' ? 'Ενεργοποιήθηκε το φωτεινό θέμα.' : 'Ενεργοποιήθηκε το σκοτεινό θέμα.');
+  },
+  'set-initial-balance': function () { openInitialBalanceModal(); },
+  'manual-adjustment': function () { openManualAdjustmentModal(); },
+  'export-json': function () { exportBackup(); },
+  'import-json': function () { $('#import-file').click(); },
+  'export-csv-tx': function () { exportTransactionsCsv(); },
+  'export-csv-ledger': function () { exportLedgerCsv(); },
+  'wipe': function () { confirmWipe(); },
+  'load-demo': function () { loadDemoData(); },
+  'remove-demo': function () { removeDemoData(); },
+  'close-modal': function () { closeModal(); },
+  'export-raw': function () {
+    if (!storageError) return;
+    downloadFile('financial-cycles-raw-' + todayISO() + '.txt', storageError.raw || '', 'text/plain');
+    showToast('Τα ακατέργαστα δεδομένα εξήχθησαν.');
+  },
+  'reset-corrupted': function () {
+    openConfirm({
+      title: 'Επαναφορά από την αρχή',
+      message: 'Τα κατεστραμμένα αποθηκευμένα δεδομένα θα διαγραφούν από τον browser και η εφαρμογή θα ξεκινήσει με άδεια κατάσταση.',
+      detailHtml: '<p class="faint">Αν δεν το έχεις κάνει ήδη, εξάγε πρώτα τα ακατέργαστα δεδομένα.</p>',
+      requireText: 'ΔΙΑΓΡΑΦΗ',
+      confirmLabel: 'Επαναφορά',
+      onConfirm: function () {
+        try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+        storageError = null;
+        commit(createDefaultState(), 'Η εφαρμογή ξεκίνησε από την αρχή.', 'info');
+      }
+    });
+  }
+};
+
+function bindEvents() {
+  document.addEventListener('click', function (event) {
+    var trigger = event.target.closest ? event.target.closest('[data-action]') : null;
+    if (!trigger) return;
+    var action = ACTIONS[trigger.getAttribute('data-action')];
+    if (!action) return;
+    event.preventDefault();
+    action(trigger);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && modal.open) {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+    trapFocus(event);
+  });
+
+  // Clicking the dimmed backdrop (never the dialog itself) closes the modal.
+  $('#modal-root').addEventListener('mousedown', function (event) {
+    if (event.target === event.currentTarget) closeModal();
+  });
+
+  $('#search-input').addEventListener('input', function (event) {
+    ui.query = event.target.value;
+    renderCycles();
+  });
+
+  $('#import-file').addEventListener('change', function (event) {
+    var file = event.target.files && event.target.files[0];
+    handleImportFile(file);
+    event.target.value = '';
+  });
+
+  // Enter submits the focused modal form field.
+  $('#modal-body').addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter') return;
+    if (event.target.tagName === 'TEXTAREA') return;
+    var confirmBtn = document.getElementById('modal-confirm');
+    if (confirmBtn && !confirmBtn.disabled) {
+      event.preventDefault();
+      confirmBtn.click();
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 23 — INIT
+   -------------------------------------------------------------------------- */
+function init() {
+  appState = readStorage();
+  document.documentElement.setAttribute('data-theme', appState.settings.theme === 'light' ? 'light' : 'dark');
+  render();
+  bindEvents();
+  if (storageError) {
+    showToast('Πρόβλημα με τα αποθηκευμένα δεδομένα — δες το μήνυμα στην κορυφή.', 'error');
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+})();
+</script>
+</body>
+</html>
